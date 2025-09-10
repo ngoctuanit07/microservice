@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@types/compression": "^1.8.1"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.6",
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "hosting-service-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
+  "scripts": {
+    "prebuild": "prisma generate",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "start:dev": "nest start --watch",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "seed": "ts-node src/users/seed.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/mapped-types": "^2.0.5",
+    "@nestjs/passport": "^10.0.3",
+    "@nestjs/platform-express": "^10.0.0",
+    "@prisma/client": "^5.22.0",
+    "@types/compression": "^1.8.1",
+    "axios": "^1.11.0",
+    "bcryptjs": "^2.4.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "compression": "^1.7.4",
+    "dotenv": "^17.2.2",
+    "helmet": "^7.1.0",
+    "nodemailer": "^7.0.6",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.1",
+    "web-push": "^3.6.7",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.4.5",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/helmet": "^4.0.0",
+    "@types/node": "^20.11.0",
+    "@types/nodemailer": "^7.0.1",
+    "@types/passport-jwt": "^3.0.9",
+    "@types/web-push": "^3.6.4",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.2"
+  }
+}
