@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const hosts_service_1 = require("./hosts.service");
 const hosts_controller_1 = require("./hosts.controller");
 const hosts_export_controller_1 = require("./hosts-export.controller");
+const common_module_1 = require("../common/common.module");
 const hosts_check_controller_1 = require("./hosts-check.controller");
 const hosts_notify_controller_1 = require("./hosts-notify.controller");
 let HostsModule = class HostsModule {
@@ -18,6 +19,7 @@ let HostsModule = class HostsModule {
 exports.HostsModule = HostsModule;
 exports.HostsModule = HostsModule = __decorate([
     (0, common_1.Module)({
+        imports: [common_module_1.CommonModule],
         controllers: [hosts_controller_1.HostsController, hosts_export_controller_1.HostsExportController, hosts_check_controller_1.HostsCheckController, hosts_notify_controller_1.HostsNotifyController],
         providers: [hosts_service_1.HostsService],
     })

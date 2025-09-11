@@ -4,9 +4,11 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { TwoFAService } from './twofa.service';
+import { CommonModule } from '../common/common.module';
 
 @Module({
   imports: [
+    CommonModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'default-secret',
       signOptions: { expiresIn: '7d' },

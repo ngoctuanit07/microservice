@@ -6,14 +6,15 @@ const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const common_1 = require("@nestjs/common");
 const helmet_1 = require("helmet");
-const compression_1 = require("compression");
+const compression = require("compression");
 const global_exception_filter_1 = require("./common/filters/global-exception.filter");
 const access_log_middleware_1 = require("./common/access-log.middleware");
+const access_log_history_service_1 = require("./common/access-log-history.service");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.use((0, helmet_1.default)());
-    app.use((0, compression_1.default)());
-    const accessLogHistoryService = app.get('AccessLogHistoryService');
+    app.use(compression());
+    const accessLogHistoryService = app.get(access_log_history_service_1.AccessLogHistoryService);
     app.use(new access_log_middleware_1.AccessLogMiddleware(accessLogHistoryService).use);
     app.enableCors({
         origin: process.env.CORS_ORIGINS?.split(',') ?? ['http://localhost:5173'],

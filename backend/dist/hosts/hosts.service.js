@@ -27,7 +27,8 @@ let HostsService = class HostsService {
         this.mailService = mailService;
         this.telegram = telegram;
         this.cache = cache;
-        this.key = Buffer.from(process.env.HOST_SECRET_KEY, 'base64');
+        const secretKey = process.env.HOST_SECRET_KEY || 'dGhpc19pc19hX2RlZmF1bHRfa2V5X2Zvcl9kZXZlbG9wbWVudF9vbmx5';
+        this.key = Buffer.from(secretKey, 'base64');
     }
     async notifyExpiringHosts() {
         const soon = new Date();

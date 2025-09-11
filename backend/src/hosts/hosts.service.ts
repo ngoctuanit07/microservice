@@ -10,7 +10,7 @@ import { SimpleCacheService } from '../common/simple-cache.service';
 
 @Injectable()
 export class HostsService {
-  private key = Buffer.from(process.env.HOST_SECRET_KEY!, 'base64');
+  private key: Buffer;
 
   constructor(
     private prisma: PrismaService,
@@ -18,7 +18,11 @@ export class HostsService {
   @Inject(MailService) private mailService: MailService,
   @Inject(TelegramService) private telegram: TelegramService,
   @Inject(SimpleCacheService) private cache: SimpleCacheService,
-  ) {}
+  ) {
+    // Khởi tạo key an toàn, với giá trị mặc định nếu không có biến môi trường
+    const secretKey = process.env.HOST_SECRET_KEY || 'dGhpc19pc19hX2RlZmF1bHRfa2V5X2Zvcl9kZXZlbG9wbWVudF9vbmx5'; // key mặc định cho dev
+    this.key = Buffer.from(secretKey, 'base64');
+  }
 
   async notifyExpiringHosts() {
     const soon = new Date();
