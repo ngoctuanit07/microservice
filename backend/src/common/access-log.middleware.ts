@@ -10,10 +10,11 @@ export class AccessLogMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const { method, url } = req;
     const user = (req.user as any)?.email || 'anonymous';
-    res.on('finish', () => {
+    const that = this; // Store reference to 'this'
+    res.on('finish', function() {
       const logEntry = `${new Date().toISOString()} | ${method} ${url} by ${user} - ${res.statusCode}`;
-      this.logger.log(logEntry);
-      this.history.logAccess(logEntry);
+      that.logger.log(logEntry);
+      that.history.logAccess(logEntry);
     });
     next();
   }

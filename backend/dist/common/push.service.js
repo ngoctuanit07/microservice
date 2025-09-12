@@ -8,27 +8,50 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var PushService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PushService = void 0;
 const common_1 = require("@nestjs/common");
 const web_push_1 = require("web-push");
-let PushService = class PushService {
+let PushService = PushService_1 = class PushService {
     constructor() {
+        this.logger = new common_1.Logger(PushService_1.name);
+        this.pushEnabled = false;
         const publicKey = process.env.VAPID_PUBLIC_KEY;
         const privateKey = process.env.VAPID_PRIVATE_KEY;
+        const email = process.env.ADMIN_EMAIL || 'admin@example.com';
         if (publicKey && privateKey) {
-            web_push_1.default.setVapidDetails('mailto:admin@example.com', publicKey, privateKey);
+            try {
+                web_push_1.default.setVapidDetails(`mailto:${email}`, publicKey, privateKey);
+                this.pushEnabled = true;
+                this.logger.log('Push notifications are enabled');
+            }
+            catch (error) {
+                this.logger.error(`Error setting up push notifications: ${error.message || String(error)}`);
+            }
         }
         else {
-            console.warn('VAPID_PUBLIC_KEY hoặc VAPID_PRIVATE_KEY chưa được thiết lập. Push notification sẽ không hoạt động.');
+            this.logger.warn('VAPID_PUBLIC_KEY or VAPID_PRIVATE_KEY not set. Push notifications will be disabled. ' +
+                'To enable push notifications, generate keys with: npx web-push generate-vapid-keys');
         }
     }
     async sendPush(subscription, payload) {
-        await web_push_1.default.sendNotification(subscription, payload);
+        if (!this.pushEnabled) {
+            this.logger.warn('Attempted to send push notification, but push service is not configured');
+            return false;
+        }
+        try {
+            await web_push_1.default.sendNotification(subscription, payload);
+            return true;
+        }
+        catch (error) {
+            this.logger.error(`Error sending push notification: ${error.message || String(error)}`);
+            return false;
+        }
     }
 };
 exports.PushService = PushService;
-exports.PushService = PushService = __decorate([
+exports.PushService = PushService = PushService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [])
 ], PushService);

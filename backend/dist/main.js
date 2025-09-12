@@ -14,8 +14,22 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.use((0, helmet_1.default)());
     app.use(compression());
-    const accessLogHistoryService = app.get(access_log_history_service_1.AccessLogHistoryService);
-    app.use(new access_log_middleware_1.AccessLogMiddleware(accessLogHistoryService).use);
+    try {
+        const accessLogHistoryService = app.get(access_log_history_service_1.AccessLogHistoryService);
+        const accessLogMiddleware = new access_log_middleware_1.AccessLogMiddleware(accessLogHistoryService);
+        app.use((req, res, next) => {
+            try {
+                accessLogMiddleware.use(req, res, next);
+            }
+            catch (error) {
+                console.error('Error in access log middleware:', error);
+                next();
+            }
+        });
+    }
+    catch (error) {
+        console.error('Failed to setup access log middleware:', error);
+    }
     app.enableCors({
         origin: process.env.CORS_ORIGINS?.split(',') ?? ['http://localhost:5173'],
         credentials: true,

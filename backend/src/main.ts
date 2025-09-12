@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
+import { Request, Response, NextFunction } from 'express';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { AccessLogMiddleware } from './common/access-log.middleware';
 import { AccessLogHistoryService } from './common/access-log-history.service';
@@ -15,8 +16,21 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
   // Sử dụng DI, lấy service bằng token class
-  const accessLogHistoryService = app.get(AccessLogHistoryService);
-  app.use(new AccessLogMiddleware(accessLogHistoryService).use);
+  try {
+    const accessLogHistoryService = app.get(AccessLogHistoryService);
+    const accessLogMiddleware = new AccessLogMiddleware(accessLogHistoryService);
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      try {
+        accessLogMiddleware.use(req, res, next);
+      } catch (error) {
+        console.error('Error in access log middleware:', error);
+        next(); // Ensure the request continues even if logging fails
+      }
+    });
+  } catch (error) {
+    console.error('Failed to setup access log middleware:', error);
+    // Continue application startup even if middleware setup fails
+  }
   app.enableCors({
     origin: process.env.CORS_ORIGINS?.split(',') ?? ['http://localhost:5173'],
     credentials: true,

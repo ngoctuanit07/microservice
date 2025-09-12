@@ -26,6 +26,12 @@ export class AuthController {
   login(@Body() dto: LoginDto) {
     return this.auth.login(dto.email, dto.password);
   }
+  
+  @UseGuards(JwtAuthGuard)
+  @Post('refresh')
+  refreshToken(@Req() req: any) {
+    return this.auth.refreshToken(req.user);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('change-password')

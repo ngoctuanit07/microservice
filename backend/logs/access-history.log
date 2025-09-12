@@ -1,0 +1,17 @@
+2025-09-12T13:32:57.032Z | OPTIONS /auth/login by anonymous - 204
+2025-09-12T13:32:57.259Z | POST /auth/login by anonymous - 201
+2025-09-12T13:33:03.942Z | OPTIONS /hosts?page=1&pageSize=10&search=&expiringInDays=30 by anonymous - 204
+2025-09-12T13:33:03.945Z | OPTIONS /hosts?page=1&pageSize=10&search=&expiringInDays=30 by anonymous - 204
+2025-09-12T13:33:03.981Z | GET /hosts?page=1&pageSize=10&search=&expiringInDays=30 by anonymous - 500
+2025-09-12T13:33:03.999Z | GET /hosts?page=1&pageSize=10&search=&expiringInDays=30 by anonymous - 500
+2025-09-12T13:33:24.530Z | OPTIONS /hosts by anonymous - 204
+2025-09-12T13:33:24.542Z | POST /hosts by anonymous - 400
+2025-09-12T13:33:31.297Z | OPTIONS /hosts by anonymous - 204
+2025-09-12T13:33:31.307Z | POST /hosts by anonymous - 400
+2025-09-12T13:33:32.473Z | POST /hosts by anonymous - 400
+2025-09-12T13:33:33.171Z | POST /hosts by anonymous - 400
+2025-09-12T13:33:33.682Z | POST /hosts by anonymous - 400
+2025-09-12T13:33:33.889Z | POST /hosts by anonymous - 400
+2025-09-12T13:33:34.154Z | POST /hosts by anonymous - 400
+2025-09-12T13:43:55.615Z | OPTIONS /hosts by anonymous - 204
+2025-09-12T13:43:55.653Z | POST /hosts by anonymous - 400

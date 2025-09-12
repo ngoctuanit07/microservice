@@ -23,10 +23,11 @@ let AccessLogMiddleware = class AccessLogMiddleware {
     use(req, res, next) {
         const { method, url } = req;
         const user = req.user?.email || 'anonymous';
-        res.on('finish', () => {
+        const that = this;
+        res.on('finish', function () {
             const logEntry = `${new Date().toISOString()} | ${method} ${url} by ${user} - ${res.statusCode}`;
-            this.logger.log(logEntry);
-            this.history.logAccess(logEntry);
+            that.logger.log(logEntry);
+            that.history.logAccess(logEntry);
         });
         next();
     }

@@ -21,14 +21,24 @@ exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
             common_module_1.CommonModule,
-            jwt_1.JwtModule.register({
-                secret: process.env.JWT_SECRET || 'default-secret',
-                signOptions: { expiresIn: '7d' },
+            jwt_1.JwtModule.registerAsync({
+                useFactory: () => {
+                    const secret = process.env.JWT_SECRET;
+                    if (!secret) {
+                        console.warn('WARNING: JWT_SECRET not set in environment variables. Using default secret which is insecure!');
+                    }
+                    return {
+                        secret: secret || 'default-secret-not-for-production-use',
+                        signOptions: {
+                            expiresIn: process.env.JWT_EXPIRES_IN || '1h',
+                        },
+                    };
+                },
             }),
         ],
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, twofa_service_1.TwoFAService],
         controllers: [auth_controller_1.AuthController],
-        exports: [twofa_service_1.TwoFAService],
+        exports: [twofa_service_1.TwoFAService, auth_service_1.AuthService],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

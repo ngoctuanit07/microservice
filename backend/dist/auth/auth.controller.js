@@ -33,6 +33,9 @@ let AuthController = class AuthController {
     login(dto) {
         return this.auth.login(dto.email, dto.password);
     }
+    refreshToken(req) {
+        return this.auth.refreshToken(req.user);
+    }
     changePassword(dto, req) {
         const userId = req.user?.sub;
         return this.auth.changePassword(userId, dto.oldPassword, dto.newPassword);
@@ -61,6 +64,14 @@ __decorate([
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('refresh'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "refreshToken", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('change-password'),
