@@ -41,6 +41,7 @@ export default function Layout() {
               <div className="nav-section">
                 <h3 className="nav-header">Admin</h3>
                 <NavLink to="/admin/settings">Settings</NavLink>
+                <NavLink to="/admin/roles">Roles & Permissions</NavLink>
               </div>
             )}
           </nav>

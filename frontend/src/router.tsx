@@ -17,6 +17,7 @@ import TeamList from '@pages/team/TeamList'
 import CreateTeam from '@pages/team/CreateTeam'
 import EditTeam from '@pages/team/EditTeam'
 import KanbanBoard from '@pages/task/KanbanBoard'
+import RolesPermissions from '@pages/admin/RolesPermissions'
 
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -25,26 +26,26 @@ const router = createBrowserRouter([
     element: <ProtectedRoute><Layout /></ProtectedRoute>,
     children: [
       { index: true, element: <Dashboard /> },
-  { path: 'hosts', element: <HostList /> },
-  { path: 'hosts/new', element: <HostForm /> },
-  { path: 'hosts/:id/edit', element: <EditHost /> },
-  // Team routes
-  { path: 'team', element: <TeamList /> },
-  { path: 'team/create', element: <CreateTeam /> },
-  { path: 'team/:id/edit', element: <EditTeam /> },
-      
+      { path: 'hosts', element: <HostList /> },
+      { path: 'hosts/new', element: <HostForm /> },
+      { path: 'hosts/:id/edit', element: <EditHost /> },
+      // Team routes
+      { path: 'team', element: <TeamList /> },
+      { path: 'team/create', element: <CreateTeam /> },
+      { path: 'team/:id/edit', element: <EditTeam /> },
       // Organization routes
-  { path: 'organization', element: <OrganizationDashboard /> },
-  { path: 'organization/create', element: <CreateOrganization /> },
-  { path: 'organization/:id/edit', element: <EditOrganization /> },
-  { path: 'organization/members', element: <OrganizationMembers /> },
-      
+      { path: 'organization', element: <OrganizationDashboard /> },
+      { path: 'organization/create', element: <CreateOrganization /> },
+      { path: 'organization/:id/edit', element: <EditOrganization /> },
+      { path: 'organization/members', element: <OrganizationMembers /> },
       // Subscription routes
-  { path: 'subscription', element: <SubscriptionManagement /> },
-  { path: 'subscription/:id/edit', element: <EditSubscription /> },
-  { path: 'subscription/success', element: <SubscriptionSuccess /> },
-        // Task routes
+      { path: 'subscription', element: <SubscriptionManagement /> },
+      { path: 'subscription/:id/edit', element: <EditSubscription /> },
+      { path: 'subscription/success', element: <SubscriptionSuccess /> },
+      // Task routes
       { path: 'task', element: <KanbanBoard /> },
+      // Admin routes
+      { path: 'admin/roles', element: <RolesPermissions /> },
     ]
   }
 ])

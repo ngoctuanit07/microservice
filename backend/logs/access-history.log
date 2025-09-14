@@ -484,3 +484,17 @@
 2025-09-14T13:13:04.600Z | GET /api/task/boards by anonymous - 200
 2025-09-14T13:13:19.218Z | OPTIONS /api/task/boards by anonymous - 204
 2025-09-14T13:13:19.225Z | GET /api/task/boards by anonymous - 304
+2025-09-14T13:22:07.316Z | OPTIONS /api/task/boards by anonymous - 204
+2025-09-14T13:22:07.336Z | OPTIONS /api/task/boards by anonymous - 204
+2025-09-14T13:22:07.351Z | GET /api/task/boards by anonymous - 304
+2025-09-14T13:22:07.373Z | GET /api/task/boards by anonymous - 304
+2025-09-14T13:22:13.826Z | OPTIONS /api/auth/login by anonymous - 204
+2025-09-14T13:22:14.004Z | POST /api/auth/login by anonymous - 201
+2025-09-14T13:22:22.488Z | OPTIONS /organizations/current by anonymous - 204
+2025-09-14T13:22:22.493Z | OPTIONS /organizations/current by anonymous - 204
+2025-09-14T13:22:22.501Z | GET /organizations/current by anonymous - 404
+2025-09-14T13:22:22.509Z | GET /organizations/current by anonymous - 404
+2025-09-14T13:22:24.394Z | OPTIONS /subscription/plan by anonymous - 204
+2025-09-14T13:22:24.397Z | OPTIONS /subscription/plan by anonymous - 204
+2025-09-14T13:22:24.402Z | GET /subscription/plan by anonymous - 404
+2025-09-14T13:22:24.406Z | GET /subscription/plan by anonymous - 404
