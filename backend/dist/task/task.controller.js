@@ -16,6 +16,12 @@ exports.TaskController = void 0;
 const common_1 = require("@nestjs/common");
 const task_service_1 = require("./task.service");
 let TaskController = class TaskController {
+    updateBoard(id, body) {
+        return this.taskService.updateBoard(Number(id), body.name);
+    }
+    deleteBoard(id) {
+        return this.taskService.deleteBoard(Number(id));
+    }
     constructor(taskService) {
         this.taskService = taskService;
     }
@@ -32,7 +38,14 @@ let TaskController = class TaskController {
         return this.taskService.createTask(Number(boardId), body.title, body.description);
     }
     updateTask(id, body) {
-        return this.taskService.updateTask(Number(id), body);
+        const updateData = {};
+        if (body.title !== undefined)
+            updateData.title = body.title;
+        if (body.description !== undefined)
+            updateData.description = body.description;
+        if (body.status !== undefined)
+            updateData.status = body.status;
+        return this.taskService.updateTask(Number(id), updateData);
     }
     moveTask(id, body) {
         return this.taskService.moveTask(Number(id), body.boardId, body.status);
@@ -42,6 +55,21 @@ let TaskController = class TaskController {
     }
 };
 exports.TaskController = TaskController;
+__decorate([
+    (0, common_1.Put)('boards/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", void 0)
+], TaskController.prototype, "updateBoard", null);
+__decorate([
+    (0, common_1.Delete)('boards/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], TaskController.prototype, "deleteBoard", null);
 __decorate([
     (0, common_1.Get)('boards'),
     __metadata("design:type", Function),

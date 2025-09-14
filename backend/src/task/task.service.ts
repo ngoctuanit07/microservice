@@ -3,6 +3,15 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class TaskService {
+  async updateBoard(id: number, name: string) {
+    return this.prisma.board.update({ where: { id }, data: { name } });
+  }
+
+  async deleteBoard(id: number) {
+    // Xóa board và các task liên quan
+    await this.prisma.task.deleteMany({ where: { boardId: id } });
+    return this.prisma.board.delete({ where: { id } });
+  }
   constructor(private prisma: PrismaService) {}
 
   async getBoards() {

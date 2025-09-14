@@ -3,6 +3,15 @@ import { TaskService } from './task.service';
 
 @Controller('task')
 export class TaskController {
+  @Put('boards/:id')
+  updateBoard(@Param('id') id: number, @Body() body: any) {
+    return this.taskService.updateBoard(Number(id), body.name);
+  }
+
+  @Delete('boards/:id')
+  deleteBoard(@Param('id') id: number) {
+    return this.taskService.deleteBoard(Number(id));
+  }
   constructor(private readonly taskService: TaskService) {}
 
   @Get('boards')
@@ -27,7 +36,12 @@ export class TaskController {
 
   @Put('tasks/:id')
   updateTask(@Param('id') id: number, @Body() body: any) {
-    return this.taskService.updateTask(Number(id), body);
+    // Only allow updating title, description, status
+    const updateData: any = {};
+    if (body.title !== undefined) updateData.title = body.title;
+    if (body.description !== undefined) updateData.description = body.description;
+    if (body.status !== undefined) updateData.status = body.status;
+    return this.taskService.updateTask(Number(id), updateData);
   }
 
   @Put('tasks/:id/move')

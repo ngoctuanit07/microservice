@@ -13,6 +13,13 @@ exports.TaskService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 let TaskService = class TaskService {
+    async updateBoard(id, name) {
+        return this.prisma.board.update({ where: { id }, data: { name } });
+    }
+    async deleteBoard(id) {
+        await this.prisma.task.deleteMany({ where: { boardId: id } });
+        return this.prisma.board.delete({ where: { id } });
+    }
     constructor(prisma) {
         this.prisma = prisma;
     }
