@@ -17,19 +17,58 @@ let UsersService = class UsersService {
         this.prisma = prisma;
     }
     findByEmail(email) {
-        return this.prisma.user.findUnique({ where: { email } });
+        return this.prisma.user.findUnique({
+            where: { email }
+        });
     }
-    listUsers() {
+    async listUsers() {
         return this.prisma.user.findMany();
     }
-    createUser(data) {
-        return this.prisma.user.create({ data });
+    async createUser(data) {
+        return this.prisma.user.create({
+            data
+        });
     }
-    updateUser(id, data) {
-        return this.prisma.user.update({ where: { id }, data });
+    async updateUser(id, data) {
+        const { role, ...updateData } = data;
+        return this.prisma.user.update({
+            where: { id },
+            data: updateData
+        });
     }
-    deleteUser(id) {
+    async deleteUser(id) {
         return this.prisma.user.delete({ where: { id } });
+    }
+    async findRoleByName(name) {
+        try {
+            const roles = await this.prisma.$queryRaw `
+        SELECT * FROM Role WHERE name = ${name} LIMIT 1
+      `;
+            if (!roles || roles.length === 0)
+                throw new common_1.NotFoundException(`Role with name ${name} not found`);
+            return roles[0];
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Role with name ${name} not found`);
+        }
+    }
+    async getRoles() {
+        try {
+            return await this.prisma.$queryRaw `
+        SELECT r.*, 
+          (SELECT JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id', rp.id,
+              'permissionId', rp.permissionId,
+              'permission', (SELECT JSON_OBJECT('id', p.id, 'name', p.name) FROM Permission p WHERE p.id = rp.permissionId)
+            )
+          ) FROM RolePermission rp WHERE rp.roleId = r.id) as permissions
+        FROM Role r
+      `;
+        }
+        catch (error) {
+            return [];
+        }
     }
 };
 exports.UsersService = UsersService;

@@ -97,15 +97,18 @@ export default function KanbanBoard() {
     const { source, destination, draggableId } = result;
     const taskId = parseInt(draggableId);
     const boardId = parseInt(destination.droppableId);
-    // Lấy status mới dựa vào vị trí board
+    // Determine new status based on board name
     let newStatus = 'todo';
     const destBoard = boards.find(b => b.id === boardId);
     if (destBoard) {
-      // Nếu kéo sang board có tên chứa 'progress' thì status là inprogress, 'done' thì done
-      if (destBoard.name.toLowerCase().includes('progress')) newStatus = 'inprogress';
-      else if (destBoard.name.toLowerCase().includes('done')) newStatus = 'done';
+      const name = destBoard.name.toLowerCase();
+      if (name.includes('progress') || name.includes('doing') || name.includes('inprogress')) newStatus = 'inprogress';
+      else if (name.includes('done') || name.includes('completed') || name.includes('finish')) newStatus = 'done';
+      else if (name.includes('todo') || name.includes('backlog')) newStatus = 'todo';
     }
     await moveTask(taskId, boardId, newStatus);
+    // Optionally show a toast or alert for status change
+    // window.alert(`Task status updated to ${newStatus}`);
     fetchBoards();
   };
 
@@ -185,9 +188,11 @@ export default function KanbanBoard() {
                                 <div className="d-flex justify-content-between align-items-center">
                                   <div className="d-flex align-items-center gap-2">
                                     <Card.Title className="mb-0">{task.title}</Card.Title>
-                                    <Button size="sm" variant="light" onClick={() => handleEditTask(task)} title="Sửa task"><i className="bi bi-pencil"></i></Button>
+                                    <Button size="sm" variant="primary" onClick={() => handleEditTask(task)} title="Chỉnh sửa task" aria-label="Edit task">
+                                      <i className="bi bi-pencil"></i> Sửa
+                                    </Button>
                                   </div>
-                                  <span className="badge bg-secondary">{task.status}</span>
+                                  <span className="badge bg-secondary" title="Trạng thái sẽ tự động cập nhật khi kéo sang board khác">{task.status}</span>
                                   <Button size="sm" variant="danger" onClick={() => handleDeleteTask(task.id)} title="Xóa task"><i className="bi bi-trash"></i></Button>
                                 </div>
                                 {task.description && <Card.Text className="text-muted small">{task.description}</Card.Text>}

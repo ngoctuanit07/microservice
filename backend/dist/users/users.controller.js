@@ -23,11 +23,15 @@ let UsersController = class UsersController {
     list() {
         return this.service.listUsers();
     }
-    create(dto) {
+    async create(dto) {
+        const roleName = dto.role ?? 'user';
+        const role = await this.service.findRoleByName(roleName);
+        if (!role)
+            throw new Error(`Role ${roleName} not found`);
         return this.service.createUser({
             email: dto.email,
             passwordHash: dto.password,
-            role: dto.role ?? 'user',
+            roleId: role.id,
         });
     }
     update(id, dto) {
@@ -53,7 +57,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "create", null);
 __decorate([
     (0, common_1.Patch)(':id'),

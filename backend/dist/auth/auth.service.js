@@ -23,7 +23,10 @@ let AuthService = AuthService_1 = class AuthService {
     }
     async validateUser(email, password) {
         try {
-            const user = await this.prisma.user.findUnique({ where: { email } });
+            const user = await this.prisma.user.findUnique({
+                where: { email },
+                include: { role: true }
+            });
             if (!user) {
                 this.logger.warn(`Login attempt with non-existent email: ${email}`);
                 throw new common_1.UnauthorizedException('Invalid credentials');
@@ -47,9 +50,12 @@ let AuthService = AuthService_1 = class AuthService {
     }
     async login(email, password) {
         const user = await this.validateUser(email, password);
+        const roleId = user.roleId || 0;
+        const roleName = user.role && user.role.name ? user.role.name : 'user';
         const payload = {
             sub: user.id,
-            role: user.role,
+            roleId,
+            roleName,
             email: user.email,
             name: user.name ?? undefined
         };
@@ -59,7 +65,8 @@ let AuthService = AuthService_1 = class AuthService {
             user: {
                 id: user.id,
                 email: user.email,
-                role: user.role,
+                roleId,
+                roleName,
                 name: user.name ?? undefined
             }
         };
@@ -74,7 +81,8 @@ let AuthService = AuthService_1 = class AuthService {
             }
             const payload = {
                 sub: userRecord.id,
-                role: userRecord.role,
+                roleId: user.roleId,
+                roleName: user.roleName,
                 email: userRecord.email,
                 name: userRecord.name ?? undefined
             };

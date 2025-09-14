@@ -13,12 +13,15 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() dto: { email: string; password: string; role?: string }) {
+  async create(@Body() dto: { email: string; password: string; role?: string }) {
     // ...hash password, create user
+    const roleName = dto.role ?? 'user';
+    const role = await this.service.findRoleByName(roleName);
+    if (!role) throw new Error(`Role ${roleName} not found`);
     return this.service.createUser({
       email: dto.email,
       passwordHash: dto.password, // thực tế nên hash
-      role: dto.role ?? 'user',
+      roleId: role.id,
     });
   }
 

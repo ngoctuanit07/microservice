@@ -35,8 +35,10 @@ let JwtStrategy = JwtStrategy_1 = class JwtStrategy extends (0, passport_1.Passp
         }
         return {
             sub: payload.sub,
-            role: payload.role,
-            email: payload.email
+            roleId: payload.roleId,
+            roleName: payload.roleName,
+            email: payload.email,
+            name: payload.name
         };
     }
 };

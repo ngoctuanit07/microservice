@@ -61,6 +61,12 @@ exports.PLAN_FEATURES = {
     },
 };
 let SubscriptionService = SubscriptionService_1 = class SubscriptionService {
+    async getRoleId(roleName) {
+        const role = await this.prisma.role.findUnique({ where: { name: roleName } });
+        if (!role)
+            throw new Error(`Role ${roleName} not found`);
+        return role.id;
+    }
     constructor(prisma, stripeService, mailService) {
         this.prisma = prisma;
         this.stripeService = stripeService;
@@ -222,8 +228,9 @@ let SubscriptionService = SubscriptionService_1 = class SubscriptionService {
             where: { id: organization.id },
             data: { subscriptionExpiresAt: expiresAt },
         });
+        const adminRoleId = await this.getRoleId('ADMIN');
         const adminUsers = await this.prisma.user.findMany({
-            where: { organizationId: organization.id, role: 'ADMIN' },
+            where: { organizationId: organization.id, roleId: adminRoleId },
         });
         for (const user of adminUsers) {
             await this.mailService.sendMail(user.email, 'Payment Successful', `Your subscription payment was successful. Your subscription is now extended until ${expiresAt.toLocaleDateString()}.`);
@@ -237,8 +244,9 @@ let SubscriptionService = SubscriptionService_1 = class SubscriptionService {
         });
         if (!organization)
             return;
+        const adminRoleId = await this.getRoleId('ADMIN');
         const adminUsers = await this.prisma.user.findMany({
-            where: { organizationId: organization.id, role: 'ADMIN' },
+            where: { organizationId: organization.id, roleId: adminRoleId },
         });
         for (const user of adminUsers) {
             await this.mailService.sendMail(user.email, 'Payment Failed', 'Your subscription payment has failed. Please update your payment method to avoid service interruption.');
@@ -256,8 +264,9 @@ let SubscriptionService = SubscriptionService_1 = class SubscriptionService {
             where: { id: organization.id ?? undefined },
             data: { subscriptionPlan: SubscriptionPlanType.FREE, subscriptionId: undefined },
         });
+        const adminRoleId = await this.getRoleId('ADMIN');
         const adminUsers = await this.prisma.user.findMany({
-            where: { organizationId: organization.id, role: 'ADMIN' },
+            where: { organizationId: organization.id, roleId: adminRoleId },
         });
         for (const user of adminUsers) {
             await this.mailService.sendMail(user.email, 'Subscription Canceled', 'Your subscription has been canceled. Some features may no longer be available.');

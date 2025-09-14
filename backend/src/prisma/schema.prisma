@@ -8,11 +8,13 @@ model AuditLog {
   ipAddress  String?
   createdAt  DateTime @default(now())
 }
+
 // backend/src/prisma/schema-update.prisma
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,167 +22,205 @@ generator client {
 model Organization {
   id                    Int       @id @default(autoincrement())
   name                  String
-  ownerId               Int       // User ID của owner
+  ownerId               Int // User ID của owner
   subscriptionPlan      String    @default("FREE")
-  subscriptionId        String?   // Stripe subscription ID
-  stripeCustomerId      String?   // Stripe customer ID
+  subscriptionId        String? // Stripe subscription ID
+  stripeCustomerId      String? // Stripe customer ID
   subscriptionExpiresAt DateTime?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
-  
-  users                 User[]
-  hosts                 Host[]
-  teams                 Team[]
-  apiKeys               ApiKey[]
+
+  users   User[]
+  hosts   Host[]
+  teams   Team[]
+  apiKeys ApiKey[]
 }
 
 model Team {
-  id             Int       @id @default(autoincrement())
-  name           String
-  description    String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   organizationId Int
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  
-  users          UserTeam[]
-  hosts          HostTeam[]
+
+  users UserTeam[]
+  hosts HostTeam[]
 }
 
 model UserTeam {
   userId    Int
   teamId    Int
-  role      String    @default("MEMBER") // OWNER, ADMIN, MEMBER
-  createdAt DateTime  @default(now())
-  
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  
+  role      String   @default("MEMBER") // OWNER, ADMIN, MEMBER
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
   @@id([userId, teamId])
 }
 
 model HostTeam {
   hostId    Int
   teamId    Int
-  createdAt DateTime  @default(now())
-  
-  host      Host      @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  
+  createdAt DateTime @default(now())
+
+  host Host @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
   @@id([hostId, teamId])
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique
-  passwordHash   String
-  name           String?
-  role           String    @default("USER")  // ADMIN, USER
-  lastLoginAt    DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
   organizationId Int?
   organization   Organization? @relation(fields: [organizationId], references: [id])
-  
-  hosts          Host[]
-  teams          UserTeam[]
-  sessions       Session[]
-  notifications  Notification[]
-  apiKeys        ApiKey[]
+
+  roleId Int
+  role   Role @relation(fields: [roleId], references: [id])
+
+  subscriptionId Int?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  hosts         Host[]
+  teams         UserTeam[]
+  sessions      Session[]
+  notifications Notification[]
+  apiKeys       ApiKey[]
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  description String?
+  users       User[]
+  permissions RolePermission[]
+}
+
+model Permission {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  description String?
+  roles       RolePermission[]
+}
+
+model RolePermission {
+  id           Int        @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model Subscription {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  price       Float   @default(0)
+  duration    Int // Số ngày
+  users       User[]
 }
 
 model Host {
-  id             Int       @id @default(autoincrement())
-  ip             String
-  port           Int
-  uid            String
-  pwdEnc         String    // AES-256-GCM base64 payload (iv:ciphertext:authTag)
-  purchasedAt    DateTime
-  expiredAt      DateTime
-  notes          String?
-  status         String    @default("ACTIVE")  // ACTIVE, INACTIVE, EXPIRED
-  lastCheckedAt  DateTime?
+  id              Int       @id @default(autoincrement())
+  ip              String
+  port            Int
+  uid             String
+  pwdEnc          String // AES-256-GCM base64 payload (iv:ciphertext:authTag)
+  purchasedAt     DateTime
+  expiredAt       DateTime
+  notes           String?
+  status          String    @default("ACTIVE") // ACTIVE, INACTIVE, EXPIRED
+  lastCheckedAt   DateTime?
   lastCheckStatus String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  
-  userId         Int
-  user           User      @relation(fields: [userId], references: [id])
-  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
   organizationId Int?
   organization   Organization? @relation(fields: [organizationId], references: [id])
-  
-  teams          HostTeam[]
-  alerts         Alert[]
-  
+
+  teams  HostTeam[]
+  alerts Alert[]
+
   @@index([expiredAt])
   @@index([ip, port])
   @@index([status])
 }
 
 model ApiKey {
-  id             Int       @id @default(autoincrement())
-  name           String
-  key            String    @unique
-  lastUsedAt     DateTime?
-  expiresAt      DateTime?
-  createdAt      DateTime  @default(now())
-  
-  userId         Int
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id         Int       @id @default(autoincrement())
+  name       String
+  key        String    @unique
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   organizationId Int
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  
+
   @@index([key])
 }
 
 model Session {
-  id             String    @id @default(uuid())
-  token          String    @unique
-  expiresAt      DateTime
-  createdAt      DateTime  @default(now())
-  ipAddress      String?
-  userAgent      String?
-  
-  userId         Int
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Alert {
-  id             Int       @id @default(autoincrement())
-  type           String    // EXPIRY, DOWN, SECURITY
-  message        String
-  status         String    @default("PENDING")  // PENDING, RESOLVED, DISMISSED
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  resolvedAt     DateTime?
-  
-  hostId         Int?
-  host           Host?     @relation(fields: [hostId], references: [id], onDelete: SetNull)
+  id         Int       @id @default(autoincrement())
+  type       String // EXPIRY, DOWN, SECURITY
+  message    String
+  status     String    @default("PENDING") // PENDING, RESOLVED, DISMISSED
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  resolvedAt DateTime?
+
+  hostId Int?
+  host   Host? @relation(fields: [hostId], references: [id], onDelete: SetNull)
 }
 
 model Notification {
-  id             Int       @id @default(autoincrement())
-  type           String    // EMAIL, SMS, PUSH, SLACK, TELEGRAM
-  message        String
-  status         String    @default("PENDING")  // PENDING, SENT, FAILED
-  createdAt      DateTime  @default(now())
-  sentAt         DateTime?
-  
-  userId         Int
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  type      String // EMAIL, SMS, PUSH, SLACK, TELEGRAM
+  message   String
+  status    String    @default("PENDING") // PENDING, SENT, FAILED
+  createdAt DateTime  @default(now())
+  sentAt    DateTime?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
 model Board {
-  id          Int      @id @default(autoincrement())
-  name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  tasks       Task[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tasks     Task[]
 }
 
 model Task {

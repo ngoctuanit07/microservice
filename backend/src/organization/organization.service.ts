@@ -37,8 +37,8 @@ export class OrganizationService {
 
     // Gán user vào organization và set role là ADMIN
     await this.prisma.user.update({
-      where: { id: userId },
-      data: { organizationId: organization.id, role: 'ADMIN' },
+  where: { id: userId },
+  data: { organizationId: organization.id, roleId: await this.getRoleId('ADMIN') },
     });
 
     this.auditLog.log(
@@ -99,15 +99,16 @@ export class OrganizationService {
    */
   async inviteUser(organizationId: number, email: string, role: string, inviterEmail: string) {
     let user = await this.prisma.user.findUnique({ where: { email } });
+    const roleId = await this.getRoleId(role);
     if (!user) {
       const tempPassword = Math.random().toString(36).slice(-8);
       const bcrypt = require('bcryptjs');
       const passwordHash = await bcrypt.hash(tempPassword, 10);
       user = await this.prisma.user.create({
-        data: { email, passwordHash, role, organizationId: organizationId },
+        data: { email, passwordHash, roleId, organizationId: organizationId },
       });
     } else {
-      await this.prisma.user.update({ where: { id: user.id }, data: { organizationId: organizationId, role } });
+      await this.prisma.user.update({ where: { id: user.id }, data: { organizationId: organizationId, roleId } });
     }
     this.auditLog.log(
       inviterEmail,
@@ -124,7 +125,7 @@ export class OrganizationService {
   async removeUser(organizationId: number, userId: number, removerEmail: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
-    await this.prisma.user.update({ where: { id: userId }, data: { organizationId: null, role: 'USER' } });
+  await this.prisma.user.update({ where: { id: userId }, data: { organizationId: null, roleId: await this.getRoleId('USER') } });
     this.auditLog.log(
       removerEmail,
       'remove',
@@ -140,7 +141,7 @@ export class OrganizationService {
   async changeUserRole(organizationId: number, userId: number, newRole: string, adminEmail: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
     if (!user) throw new NotFoundException('User not found');
-    await this.prisma.user.update({ where: { id: userId }, data: { role: newRole } });
+    await this.prisma.user.update({ where: { id: userId }, data: { roleId: await this.getRoleId(newRole) } });
     this.auditLog.log(
       adminEmail,
       'update',
@@ -148,6 +149,13 @@ export class OrganizationService {
       `Changed ${user.email}'s role to ${newRole}`
     );
     return { id: userId, email: user.email, role: newRole };
+  }
+
+  // Helper to get roleId by name
+  private async getRoleId(roleName: string): Promise<number> {
+    const role = await this.prisma.role.findUnique({ where: { name: roleName } });
+    if (!role) throw new Error(`Role ${roleName} not found`);
+    return role.id;
   }
 
   /**

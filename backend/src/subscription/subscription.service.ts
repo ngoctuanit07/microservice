@@ -61,6 +61,12 @@ export const PLAN_FEATURES: Record<SubscriptionPlanType, PlanFeatures> = {
 
 @Injectable()
 export class SubscriptionService {
+  // Helper to get roleId by name
+  private async getRoleId(roleName: string): Promise<number> {
+    const role = await this.prisma.role.findUnique({ where: { name: roleName } });
+    if (!role) throw new Error(`Role ${roleName} not found`);
+    return role.id;
+  }
   private readonly logger = new Logger(SubscriptionService.name);
 
   constructor(
@@ -275,10 +281,10 @@ export class SubscriptionService {
     });
 
     // Notify admin users
+    const adminRoleId = await this.getRoleId('ADMIN');
     const adminUsers = await this.prisma.user.findMany({
-      where: { organizationId: organization.id, role: 'ADMIN' },
+      where: { organizationId: organization.id, roleId: adminRoleId },
     });
-
     for (const user of adminUsers) {
       await this.mailService.sendMail(
         user.email,
@@ -299,10 +305,10 @@ export class SubscriptionService {
     if (!organization) return;
 
     // Notify admin users
+    const adminRoleId = await this.getRoleId('ADMIN');
     const adminUsers = await this.prisma.user.findMany({
-      where: { organizationId: organization.id, role: 'ADMIN' },
+      where: { organizationId: organization.id, roleId: adminRoleId },
     });
-
     for (const user of adminUsers) {
       await this.mailService.sendMail(
         user.email,
@@ -329,10 +335,10 @@ export class SubscriptionService {
     });
 
     // Notify admin users
+    const adminRoleId = await this.getRoleId('ADMIN');
     const adminUsers = await this.prisma.user.findMany({
-      where: { organizationId: organization.id, role: 'ADMIN' },
+      where: { organizationId: organization.id, roleId: adminRoleId },
     });
-
     for (const user of adminUsers) {
       await this.mailService.sendMail(
         user.email,

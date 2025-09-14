@@ -29,10 +29,10 @@ let RolesGuard = class RolesGuard {
         if (!user) {
             throw new common_1.UnauthorizedException('User not authenticated');
         }
-        if (!user.role) {
+        if (!user.roleName) {
             throw new common_1.ForbiddenException('User has no role');
         }
-        if (!required.includes(user.role)) {
+        if (!required.includes(user.roleName)) {
             throw new common_1.ForbiddenException('User does not have required role');
         }
         return true;

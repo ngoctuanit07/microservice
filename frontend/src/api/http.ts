@@ -47,8 +47,8 @@ http.interceptors.response.use(
       // Unauthorized - handle token refresh or logout
       
       // Don't retry already retried requests or login requests
-      if (originalRequest._retry || originalRequest.url === '/auth/login' || 
-          originalRequest.url === '/auth/refresh') {
+      if (originalRequest._retry || originalRequest.url === '/api/auth/login' || 
+          originalRequest.url === '/api/auth/refresh') {
         // Clear auth and redirect to login if not already there
         localStorage.removeItem('token')
         if (!location.pathname.startsWith('/login')) {
