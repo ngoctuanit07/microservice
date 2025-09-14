@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TaskModule } from './task/task.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { HostsModule } from './hosts/hosts.module';
@@ -26,7 +27,8 @@ import { DependencyController } from './common/dependency.controller';
     UsersModule, 
     OrganizationModule,
     SubscriptionModule,
-    TeamModule
+  TeamModule,
+  TaskModule,
   ],
   controllers: [
     StatsController, 

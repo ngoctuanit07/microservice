@@ -12,6 +12,7 @@ import { AccessLogHistoryService } from './common/access-log-history.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
 
   app.use(helmet());
   app.use(compression());

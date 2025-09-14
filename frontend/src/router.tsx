@@ -16,6 +16,7 @@ import EditSubscription from '@pages/subscription/EditSubscription'
 import TeamList from '@pages/team/TeamList'
 import CreateTeam from '@pages/team/CreateTeam'
 import EditTeam from '@pages/team/EditTeam'
+import KanbanBoard from '@pages/task/KanbanBoard'
 
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -42,6 +43,8 @@ const router = createBrowserRouter([
   { path: 'subscription', element: <SubscriptionManagement /> },
   { path: 'subscription/:id/edit', element: <EditSubscription /> },
   { path: 'subscription/success', element: <SubscriptionSuccess /> },
+        // Task routes
+      { path: 'task', element: <KanbanBoard /> },
     ]
   }
 ])

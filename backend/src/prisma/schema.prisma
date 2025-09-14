@@ -1,3 +1,13 @@
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  userEmail  String
+  action     String
+  entityType String
+  entityId   Int?
+  detail     String?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+}
 // backend/src/prisma/schema-update.prisma
 datasource db {
   provider = "mysql"
@@ -164,13 +174,22 @@ model Notification {
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model AuditLog {
-  id             Int       @id @default(autoincrement())
-  userEmail      String
-  action         String
-  entityType     String    // HOST, USER, ORGANIZATION, API_KEY, etc.
-  entityId       Int?
-  detail         String?
-  ipAddress      String?
-  createdAt      DateTime  @default(now())
+
+model Board {
+  id          Int      @id @default(autoincrement())
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tasks       Task[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      String   @default("todo") // todo, inprogress, done
+  boardId     Int
+  board       Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

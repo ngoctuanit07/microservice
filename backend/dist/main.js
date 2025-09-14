@@ -12,6 +12,7 @@ const access_log_middleware_1 = require("./common/access-log.middleware");
 const access_log_history_service_1 = require("./common/access-log-history.service");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.setGlobalPrefix('api');
     app.use((0, helmet_1.default)());
     app.use(compression());
     try {

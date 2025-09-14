@@ -27,6 +27,7 @@ export default function Layout() {
               <h3 className="nav-header">Core</h3>
               <NavLink to="/" end>Dashboard</NavLink>
               <NavLink to="/hosts">Hosts</NavLink>
+              <NavLink to="/task">Task Board</NavLink>
             </div>
             
             <div className="nav-section">
