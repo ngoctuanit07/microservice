@@ -1,0 +1,47 @@
+// backend/src/prisma/schema.prisma
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  role         String    @default("admin")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  hosts        Host[]
+}
+
+model Host {
+  id          Int       @id @default(autoincrement())
+  ip          String
+  port        Int
+  uid         String
+  pwdEnc      String     // AES-256-GCM base64 payload (iv:ciphertext:authTag)
+  purchasedAt DateTime
+  expiredAt   DateTime
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@index([expiredAt])
+  @@index([ip, port])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userEmail String
+  action    String
+  hostId    Int?
+  detail    String?
+  createdAt DateTime @default(now())
+}

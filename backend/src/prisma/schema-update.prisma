@@ -10,7 +10,6 @@ generator client {
 model Organization {
   id                    Int       @id @default(autoincrement())
   name                  String
-  ownerId               Int       // User ID của owner
   subscriptionPlan      String    @default("FREE")
   subscriptionId        String?   // Stripe subscription ID
   stripeCustomerId      String?   // Stripe customer ID

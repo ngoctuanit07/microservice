@@ -13,6 +13,8 @@
     "start:dev": "nest start --watch",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
+    "migrate:commercial": "node scripts/migrate-commercial.js",
+    "migrate:data-commercial": "node scripts/migrate-data-commercial.js",
     "seed": "ts-node src/users/seed.ts"
   },
   "dependencies": {

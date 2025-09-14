@@ -15,3 +15,5 @@
 2025-09-12T13:33:34.154Z | POST /hosts by anonymous - 400
 2025-09-12T13:43:55.615Z | OPTIONS /hosts by anonymous - 204
 2025-09-12T13:43:55.653Z | POST /hosts by anonymous - 400
+2025-09-12T14:03:14.906Z | OPTIONS /auth/login by anonymous - 204
+2025-09-12T14:03:15.132Z | POST /auth/login by anonymous - 201

@@ -4,6 +4,9 @@ import { AuthModule } from './auth/auth.module';
 import { HostsModule } from './hosts/hosts.module';
 import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
+import { OrganizationModule } from './organization/organization.module';
+import { SubscriptionModule } from './subscription/subscription.module';
+import { TeamModule } from './team/team.module';
 import { StatsController } from './common/stats.controller';
 import { StatsExportController } from './common/stats-export.controller';
 import { SecurityHealthController } from './common/security-health.controller';
@@ -15,7 +18,26 @@ import { AccessLogHistoryController } from './common/access-log-history.controll
 import { DependencyController } from './common/dependency.controller';
 
 @Module({
-  imports: [PrismaModule, CommonModule, AuthModule, HostsModule, UsersModule],
-  controllers: [StatsController, StatsExportController, SecurityHealthController, BackupController, SystemStatusController, ConfigController, DependencyController, SecurityScanController, AccessLogHistoryController],
+  imports: [
+    PrismaModule, 
+    CommonModule, 
+    AuthModule, 
+    HostsModule, 
+    UsersModule, 
+    OrganizationModule,
+    SubscriptionModule,
+    TeamModule
+  ],
+  controllers: [
+    StatsController, 
+    StatsExportController, 
+    SecurityHealthController, 
+    BackupController, 
+    SystemStatusController, 
+    ConfigController, 
+    DependencyController, 
+    SecurityScanController, 
+    AccessLogHistoryController
+  ],
 })
 export class AppModule {}
