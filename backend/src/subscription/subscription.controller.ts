@@ -7,7 +7,21 @@ import { SubscriptionService, SubscriptionPlanType } from './subscription.servic
 @Controller('subscription')
 @UseGuards(JwtAuthGuard)
 export class SubscriptionController {
+  @Post('checkout')
+  async createCheckout(@Req() req: any, @Body() body: { planId: string, successUrl: string, cancelUrl: string }) {
+    return this.subscriptionService.createCheckoutSession(
+      req.user.sub,
+      body.planId,
+      body.successUrl,
+      body.cancelUrl
+    );
+  }
   constructor(private readonly subscriptionService: SubscriptionService) {}
+
+  @Get('plan')
+  async getPlan(@Req() req: any) {
+    return this.subscriptionService.getSubscriptionPlan(req.user.sub);
+  }
 
   @Get('plans')
   async getAvailablePlans() {

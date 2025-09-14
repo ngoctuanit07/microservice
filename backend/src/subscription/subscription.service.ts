@@ -69,6 +69,20 @@ export class SubscriptionService {
     private mailService: MailService,
   ) {}
 
+  async createCheckoutSession(userId: number, planId: string, successUrl: string, cancelUrl: string) {
+    // Lấy thông tin user và organization
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { organization: true },
+    });
+    if (!user || !user.organization) {
+      throw new BadRequestException('User or organization not found');
+    }
+    // Gọi StripeService để tạo session
+  // Tắt Stripe: chỉ trả về URL mock thành công
+  return { url: successUrl || 'https://example.com/subscription/success' };
+  }
+
   async getSubscriptionPlan(userId: number) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },

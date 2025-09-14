@@ -22,7 +22,7 @@ export default function App() {
   }, [refreshToken])
   
   return (
-    <>
+    <div className="container py-4">
       <RouterProvider router={router} />
       <ToastContainer 
         position="top-right"
@@ -35,6 +35,6 @@ export default function App() {
         draggable
         pauseOnHover
       />
-    </>
+    </div>
   )
 }

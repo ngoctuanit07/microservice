@@ -33,10 +33,13 @@ let HostsService = HostsService_1 = class HostsService {
             const secretKey = process.env.HOST_SECRET_KEY;
             if (!secretKey) {
                 this.logger.warn('HOST_SECRET_KEY not set, using default key. This is not secure for production!');
-                this.key = Buffer.from('dGhpc19pc19hX2RlZmF1bHRfa2V5X2Zvcl9kZXZlbG9wbWVudF9vbmx5', 'base64');
+                this.key = Buffer.from('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'base64');
             }
             else {
                 this.key = Buffer.from(secretKey, 'base64');
+                if (this.key.length !== 32) {
+                    throw new Error('HOST_SECRET_KEY must be 32 bytes (base64 of 32 bytes)');
+                }
                 this.logger.log('Encryption key initialized successfully');
             }
         }

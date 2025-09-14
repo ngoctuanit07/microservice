@@ -67,6 +67,16 @@ let SubscriptionService = SubscriptionService_1 = class SubscriptionService {
         this.mailService = mailService;
         this.logger = new common_1.Logger(SubscriptionService_1.name);
     }
+    async createCheckoutSession(userId, planId, successUrl, cancelUrl) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: { organization: true },
+        });
+        if (!user || !user.organization) {
+            throw new common_1.BadRequestException('User or organization not found');
+        }
+        return { url: successUrl || 'https://example.com/subscription/success' };
+    }
     async getSubscriptionPlan(userId) {
         const user = await this.prisma.user.findUnique({
             where: { id: userId },

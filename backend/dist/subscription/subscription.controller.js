@@ -19,8 +19,14 @@ const roles_guard_1 = require("../common/guards/roles.guard");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const subscription_service_1 = require("./subscription.service");
 let SubscriptionController = class SubscriptionController {
+    async createCheckout(req, body) {
+        return this.subscriptionService.createCheckoutSession(req.user.sub, body.planId, body.successUrl, body.cancelUrl);
+    }
     constructor(subscriptionService) {
         this.subscriptionService = subscriptionService;
+    }
+    async getPlan(req) {
+        return this.subscriptionService.getSubscriptionPlan(req.user.sub);
     }
     async getAvailablePlans() {
         return {
@@ -107,6 +113,21 @@ let SubscriptionController = class SubscriptionController {
     }
 };
 exports.SubscriptionController = SubscriptionController;
+__decorate([
+    (0, common_1.Post)('checkout'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], SubscriptionController.prototype, "createCheckout", null);
+__decorate([
+    (0, common_1.Get)('plan'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SubscriptionController.prototype, "getPlan", null);
 __decorate([
     (0, common_1.Get)('plans'),
     __metadata("design:type", Function),
