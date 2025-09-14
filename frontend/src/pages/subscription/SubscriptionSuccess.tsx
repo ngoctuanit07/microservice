@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { http } from '@api/http';
-import '@styles/commercial.css';
+import '../../styles/commercial.css';
 
 export default function SubscriptionSuccess() {
   const navigate = useNavigate();

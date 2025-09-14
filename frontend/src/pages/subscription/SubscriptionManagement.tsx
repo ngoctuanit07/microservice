@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { http } from '@api/http';
-import '@styles/commercial.css';
+import '../../styles/commercial.css';
 
 interface Plan {
   id: string;

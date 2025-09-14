@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '@store/auth'
-import '@styles/commercial.css'
+import '../styles/commercial.css'
 
 export default function Layout() {
   const { logout, user } = useAuth()
