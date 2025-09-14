@@ -26,9 +26,16 @@ let RolesGuard = class RolesGuard {
             return true;
         const req = ctx.switchToHttp().getRequest();
         const user = req.user;
-        if (!user?.role)
-            return false;
-        return required.includes(user.role);
+        if (!user) {
+            throw new common_1.UnauthorizedException('User not authenticated');
+        }
+        if (!user.role) {
+            throw new common_1.ForbiddenException('User has no role');
+        }
+        if (!required.includes(user.role)) {
+            throw new common_1.ForbiddenException('User does not have required role');
+        }
+        return true;
     }
 };
 exports.RolesGuard = RolesGuard;

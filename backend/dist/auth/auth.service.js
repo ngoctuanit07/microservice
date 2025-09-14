@@ -40,7 +40,8 @@ let AuthService = AuthService_1 = class AuthService {
             if (error instanceof common_1.UnauthorizedException) {
                 throw error;
             }
-            this.logger.error(`Error validating user: ${error.message}`);
+            const errMsg = (error instanceof Error) ? error.message : String(error);
+            this.logger.error(`Error validating user: ${errMsg}`);
             throw new common_1.UnauthorizedException('Authentication error');
         }
     }
@@ -50,7 +51,7 @@ let AuthService = AuthService_1 = class AuthService {
             sub: user.id,
             role: user.role,
             email: user.email,
-            name: user.name
+            name: user.name ?? undefined
         };
         const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
         return {
@@ -59,7 +60,7 @@ let AuthService = AuthService_1 = class AuthService {
                 id: user.id,
                 email: user.email,
                 role: user.role,
-                name: user.name
+                name: user.name ?? undefined
             }
         };
     }
@@ -75,7 +76,7 @@ let AuthService = AuthService_1 = class AuthService {
                 sub: userRecord.id,
                 role: userRecord.role,
                 email: userRecord.email,
-                name: userRecord.name
+                name: userRecord.name ?? undefined
             };
             const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
             return {
@@ -83,7 +84,8 @@ let AuthService = AuthService_1 = class AuthService {
             };
         }
         catch (error) {
-            this.logger.error(`Error refreshing token: ${error.message}`);
+            const errMsg = (error instanceof Error) ? error.message : String(error);
+            this.logger.error(`Error refreshing token: ${errMsg}`);
             throw new common_1.UnauthorizedException('Token refresh failed');
         }
     }

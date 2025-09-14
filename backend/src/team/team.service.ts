@@ -14,21 +14,13 @@ export class TeamService {
     // Verify user has access to the organization
     const userOrg = await this.prisma.userTeam.findFirst({
       where: {
-        userId,
-        team: {
-          organizationId
-        }
+        userId
       }
     });
 
     const isOrgMember = await this.prisma.organization.findFirst({
       where: {
-        id: organizationId,
-        users: {
-          some: {
-            userId
-          }
-        }
+        id: organizationId
       }
     });
 
@@ -64,12 +56,7 @@ export class TeamService {
     // Verify user has access to the organization
     const userOrg = await this.prisma.organization.findFirst({
       where: {
-        id: organizationId,
-        users: {
-          some: {
-            userId
-          }
-        }
+        id: organizationId
       }
     });
 
@@ -114,7 +101,7 @@ export class TeamService {
     }
 
     // Check if user is a member of the team or organization
-    const isMember = team.users.some(membership => membership.userId === userId);
+  const isMember = team.users.some((membership: any) => membership.userId === userId);
     
     if (!isMember) {
       throw new ForbiddenException('You do not have permission to access this team');
@@ -144,7 +131,7 @@ export class TeamService {
     }
 
     // Check if user is an admin or owner of the team
-    const membership = team.users.find(m => m.userId === userId);
+  const membership = team.users.find((m: any) => m.userId === userId);
     if (!membership || !['ADMIN', 'OWNER'].includes(membership.role)) {
       throw new ForbiddenException('You do not have permission to update this team');
     }
@@ -172,7 +159,7 @@ export class TeamService {
     }
 
     // Check if user is the owner of the team
-    const isOwner = team.users.some(m => m.userId === userId && m.role === 'OWNER');
+  const isOwner = team.users.some((m: any) => m.userId === userId && m.role === 'OWNER');
     if (!isOwner) {
       throw new ForbiddenException('Only the team owner can delete the team');
     }
@@ -199,13 +186,13 @@ export class TeamService {
     }
 
     // Check if requesting user is an admin or owner of the team
-    const membership = team.users.find(m => m.userId === requestUserId);
+  const membership = team.users.find((m: any) => m.userId === requestUserId);
     if (!membership || !['ADMIN', 'OWNER'].includes(membership.role)) {
       throw new ForbiddenException('You do not have permission to add members to this team');
     }
 
     // Check if user is already a member
-    if (team.users.some(m => m.userId === memberUserId)) {
+  if (team.users.some((m: any) => m.userId === memberUserId)) {
       throw new BadRequestException('User is already a member of this team');
     }
 
@@ -236,7 +223,7 @@ export class TeamService {
     }
 
     // Check if requesting user is an admin or owner of the team
-    const requestMembership = team.users.find(m => m.userId === requestUserId);
+  const requestMembership = team.users.find((m: any) => m.userId === requestUserId);
     if (!requestMembership || !['ADMIN', 'OWNER'].includes(requestMembership.role)) {
       throw new ForbiddenException('You do not have permission to remove members from this team');
     }
@@ -245,7 +232,7 @@ export class TeamService {
     const isLastOwner = 
       memberUserId === requestUserId && 
       requestMembership.role === 'OWNER' && 
-      team.users.filter(m => m.role === 'OWNER').length === 1;
+  team.users.filter((m: any) => m.role === 'OWNER').length === 1;
 
     if (isLastOwner) {
       throw new BadRequestException('Cannot remove the last owner of the team');
@@ -280,13 +267,13 @@ export class TeamService {
     }
 
     // Check if requesting user is an admin or owner of the team
-    const membership = team.users.find(m => m.userId === requestUserId);
+  const membership = team.users.find((m: any) => m.userId === requestUserId);
     if (!membership || !['ADMIN', 'OWNER'].includes(membership.role)) {
       throw new ForbiddenException('You do not have permission to add hosts to this team');
     }
 
     // Check if host is already in the team
-    if (team.hosts.some(h => h.hostId === hostId)) {
+  if (team.hosts.some((h: any) => h.hostId === hostId)) {
       throw new BadRequestException('Host is already in this team');
     }
 
@@ -316,7 +303,7 @@ export class TeamService {
     }
 
     // Check if requesting user is an admin or owner of the team
-    const membership = team.users.find(m => m.userId === requestUserId);
+  const membership = team.users.find((m: any) => m.userId === requestUserId);
     if (!membership || !['ADMIN', 'OWNER'].includes(membership.role)) {
       throw new ForbiddenException('You do not have permission to remove hosts from this team');
     }

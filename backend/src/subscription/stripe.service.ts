@@ -15,7 +15,7 @@ export class StripeService {
 
   constructor() {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_default', {
-      apiVersion: '2023-10-16', // Use the latest stable version
+      apiVersion: '2025-08-27.basil', // Match expected type
     });
 
     if (!process.env.STRIPE_SECRET_KEY) {

@@ -142,11 +142,11 @@ export class SubscriptionService {
     }
 
     // Create or update Stripe customer
-    let stripeCustomerId = user.organization.stripeCustomerId;
+    let stripeCustomerId = user.organization.stripeCustomerId ?? undefined;
     if (!stripeCustomerId) {
       const customer = await this.stripeService.createCustomer({
         email: user.email,
-        name: user.name || user.email,
+        name: user.name ?? user.email,
         paymentMethodId,
       });
       stripeCustomerId = customer.id;
@@ -162,10 +162,10 @@ export class SubscriptionService {
     expiresAt.setDate(expiresAt.getDate() + 30); // 30 days from now
 
     await this.prisma.organization.update({
-      where: { id: user.organizationId },
+      where: { id: user.organizationId ?? undefined },
       data: {
         subscriptionPlan: planType,
-        subscriptionId: subscription.id,
+        subscriptionId: subscription.id ?? undefined,
         stripeCustomerId: stripeCustomerId,
         subscriptionExpiresAt: expiresAt,
       },
@@ -183,7 +183,7 @@ export class SubscriptionService {
       plan: planType,
       features: PLAN_FEATURES[planType],
       expiresAt,
-      subscriptionId: subscription.id,
+      subscriptionId: subscription.id ?? undefined,
     };
   }
 
@@ -207,10 +207,10 @@ export class SubscriptionService {
 
     // Update in database
     await this.prisma.organization.update({
-      where: { id: user.organizationId },
+      where: { id: user.organizationId ?? undefined },
       data: {
         subscriptionPlan: SubscriptionPlanType.FREE,
-        subscriptionId: null,
+        subscriptionId: undefined,
       },
     });
 
@@ -310,8 +310,8 @@ export class SubscriptionService {
 
     // Update organization to free plan
     await this.prisma.organization.update({
-      where: { id: organization.id },
-      data: { subscriptionPlan: SubscriptionPlanType.FREE, subscriptionId: null },
+      where: { id: organization.id ?? undefined },
+      data: { subscriptionPlan: SubscriptionPlanType.FREE, subscriptionId: undefined },
     });
 
     // Notify admin users

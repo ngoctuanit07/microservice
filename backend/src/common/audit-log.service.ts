@@ -7,7 +7,7 @@ export class AuditLogService {
 
   async log(userEmail: string, action: string, hostId?: number, detail?: string) {
     await this.prisma.auditLog.create({
-      data: { userEmail, action, hostId, detail },
+      data: { userEmail, action, detail, entityType: 'User' },
     });
   }
 }

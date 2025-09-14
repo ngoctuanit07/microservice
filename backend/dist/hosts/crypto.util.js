@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.encryptSecret = encryptSecret;
 exports.decryptSecret = decryptSecret;
-const crypto_1 = require("crypto");
+const crypto = require("crypto");
 const ALGO = 'aes-256-gcm';
 function encryptSecret(plain, key) {
-    const iv = crypto_1.default.randomBytes(12);
-    const cipher = crypto_1.default.createCipheriv(ALGO, key, iv);
+    const iv = crypto.randomBytes(12);
+    const cipher = crypto.createCipheriv(ALGO, key, iv);
     const enc = Buffer.concat([cipher.update(plain, 'utf8'), cipher.final()]);
     const tag = cipher.getAuthTag();
     return [
@@ -20,7 +20,7 @@ function decryptSecret(payload, key) {
     const iv = Buffer.from(ivB64, 'base64');
     const enc = Buffer.from(encB64, 'base64');
     const tag = Buffer.from(tagB64, 'base64');
-    const decipher = crypto_1.default.createDecipheriv(ALGO, key, iv);
+    const decipher = crypto.createDecipheriv(ALGO, key, iv);
     decipher.setAuthTag(tag);
     const dec = Buffer.concat([decipher.update(enc), decipher.final()]);
     return dec.toString('utf8');

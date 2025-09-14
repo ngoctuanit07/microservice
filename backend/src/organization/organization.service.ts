@@ -23,43 +23,30 @@ export class OrganizationService {
    * Create a new organization and assign the creator as admin
    */
   async createOrganization(name: string, userId: number) {
-    // Check if user already belongs to an organization
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+    // Kiểm tra user
+  const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // Create new organization and associate user
-    const organization = await this.prisma.$transaction(async (tx) => {
-      // This code will be replaced after schema migration
-      // For now we're simulating organization creation
-      this.logger.log(`Creating organization ${name} for user ${userId}`);
-      
-      // Log the creation
-      this.auditLog.log(
-        user.email,
-        'create',
-        undefined, // hostId is undefined for organization operations
-        `Created organization "${name}"`
-      );
-      
-      return {
-        id: 0,
+    // Tạo organization mới
+    const organization = await this.prisma.organization.create({
+      data: {
         name,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
+        ownerId: userId,
+      },
     });
 
-    // Update user role to ADMIN in their organization
+    // Gán user vào organization và set role là ADMIN
     await this.prisma.user.update({
       where: { id: userId },
-      data: { role: 'ADMIN' },
+      data: { organizationId: organization.id, role: 'ADMIN' },
     });
 
+    this.auditLog.log(
+      user.email,
+      'create',
+      undefined,
+      `Created organization "${name}"`
+    );
     return organization;
   }
 
@@ -67,107 +54,67 @@ export class OrganizationService {
    * Get organization details including users and resource counts
    */
   async getOrganization(id: number) {
-    // This method will be implemented after schema migration
-    this.logger.log(`Getting organization with ID ${id}`);
-    
-    // Simulate organization data
-    return {
-      id: id,
-      name: 'Demo Organization',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      users: [],
-      _count: {
-        hosts: 0,
-        users: 0
-      }
-    };
+    const organization = await this.prisma.organization.findUnique({
+      where: { id },
+      include: {
+        hosts: true,
+        users: true,
+      },
+    });
+    if (!organization) throw new NotFoundException('Organization not found');
+    return organization;
   }
 
   /**
    * Get user's organization
    */
   async getUserOrganization(userId: number) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // Simulate organization data
-    return {
-      id: 1,
-      name: 'User Organization',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      _count: {
-        users: 1,
-        hosts: user.role === 'ADMIN' ? 5 : 0
-      }
-    };
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+    if (!user.organizationId) throw new NotFoundException('User does not belong to any organization');
+    const organization = await this.prisma.organization.findUnique({ where: { id: user.organizationId } });
+    if (!organization) throw new NotFoundException('Organization not found');
+    return organization;
   }
 
   /**
    * Update organization details
    */
   async updateOrganization(id: number, data: { name?: string }, userEmail: string) {
-    // This method will be implemented after schema migration
-    this.logger.log(`Updating organization ${id} with data ${JSON.stringify(data)}`);
-    
-    // Log the update
+    const organization = await this.prisma.organization.update({
+      where: { id },
+      data,
+    });
     this.auditLog.log(
       userEmail,
       'update',
-      undefined, // hostId is undefined for organization operations
+      undefined,
       `Updated organization ID ${id}: ${JSON.stringify(data)}`
     );
-
-    return {
-      id: id,
-      name: data.name || 'Updated Organization',
-      updatedAt: new Date()
-    };
+    return organization;
   }
 
   /**
    * Invite a user to join the organization
    */
   async inviteUser(organizationId: number, email: string, role: string, inviterEmail: string) {
-    // This method will be implemented after schema migration
-    this.logger.log(`Inviting user ${email} to organization ${organizationId} with role ${role}`);
-    
-    // Check if user exists
-    let user = await this.prisma.user.findUnique({
-      where: { email },
-    });
-
+    let user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) {
-      // Create user with temporary password
       const tempPassword = Math.random().toString(36).slice(-8);
       const bcrypt = require('bcryptjs');
       const passwordHash = await bcrypt.hash(tempPassword, 10);
-
       user = await this.prisma.user.create({
-        data: {
-          email,
-          passwordHash,
-          role,
-        }
+        data: { email, passwordHash, role, organizationId: organizationId },
       });
-
-      this.logger.log(`Created new user ${email} with role ${role}`);
+    } else {
+      await this.prisma.user.update({ where: { id: user.id }, data: { organizationId: organizationId, role } });
     }
-
-    // Log the invitation
     this.auditLog.log(
       inviterEmail,
       'invite',
       user.id,
       `Invited ${email} to organization with role ${role}`
     );
-
     return user;
   }
 
@@ -175,27 +122,15 @@ export class OrganizationService {
    * Remove a user from the organization
    */
   async removeUser(organizationId: number, userId: number, removerEmail: string) {
-    // This method will be implemented after schema migration
-    this.logger.log(`Removing user ${userId} from organization ${organizationId}`);
-    
-    // Get user email for logging
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { email: true }
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // Log the removal
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+    await this.prisma.user.update({ where: { id: userId }, data: { organizationId: null, role: 'USER' } });
     this.auditLog.log(
       removerEmail,
       'remove',
       userId,
       `Removed ${user.email} from organization ${organizationId}`
     );
-
     return { success: true };
   }
 
@@ -203,55 +138,29 @@ export class OrganizationService {
    * Change a user's role within the organization
    */
   async changeUserRole(organizationId: number, userId: number, newRole: string, adminEmail: string) {
-    // This method will be implemented after schema migration
-    this.logger.log(`Changing user ${userId} role to ${newRole} in organization ${organizationId}`);
-    
-    // Get user for logging
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { email: true }
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // Update the user's role
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { role: newRole }
-    });
-
-    // Log the change
+    const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+    if (!user) throw new NotFoundException('User not found');
+    await this.prisma.user.update({ where: { id: userId }, data: { role: newRole } });
     this.auditLog.log(
       adminEmail,
       'update',
       userId,
       `Changed ${user.email}'s role to ${newRole}`
     );
-
-    return {
-      id: userId,
-      email: user.email,
-      role: newRole
-    };
+    return { id: userId, email: user.email, role: newRole };
   }
 
   /**
    * Delete an organization
    */
   async deleteOrganization(id: number, adminEmail: string) {
-    // This method will be implemented after schema migration
-    this.logger.log(`Deleting organization ${id}`);
-    
-    // Log the deletion
+    await this.prisma.organization.delete({ where: { id } });
     this.auditLog.log(
       adminEmail,
       'delete',
       undefined,
       `Deleted organization ${id}`
     );
-
     return { success: true };
   }
 }

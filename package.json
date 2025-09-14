@@ -3,7 +3,9 @@
     "@types/compression": "^1.8.1"
   },
   "dependencies": {
+    "@types/stripe": "^8.0.416",
     "nodemailer": "^7.0.6",
+    "stripe": "^18.5.0",
     "xlsx": "^0.18.5"
   }
 }

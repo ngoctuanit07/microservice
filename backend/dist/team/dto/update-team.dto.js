@@ -9,22 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuditLogService = void 0;
-const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../prisma/prisma.service");
-let AuditLogService = class AuditLogService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async log(userEmail, action, hostId, detail) {
-        await this.prisma.auditLog.create({
-            data: { userEmail, action, detail, entityType: 'User' },
-        });
-    }
-};
-exports.AuditLogService = AuditLogService;
-exports.AuditLogService = AuditLogService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], AuditLogService);
-//# sourceMappingURL=audit-log.service.js.map
+exports.UpdateTeamDto = void 0;
+const class_validator_1 = require("class-validator");
+const mapped_types_1 = require("@nestjs/mapped-types");
+const create_team_dto_1 = require("./create-team.dto");
+class UpdateTeamDto extends (0, mapped_types_1.PartialType)(create_team_dto_1.CreateTeamDto) {
+}
+exports.UpdateTeamDto = UpdateTeamDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateTeamDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateTeamDto.prototype, "description", void 0);
+//# sourceMappingURL=update-team.dto.js.map

@@ -1,5 +1,5 @@
 // backend/src/hosts/crypto.util.ts
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 const ALGO = 'aes-256-gcm';
 

@@ -1,27 +1,27 @@
 export class Team {
-  id: number;
-  name: string;
+  id!: number;
+  name!: string;
   description?: string;
-  organizationId: number;
-  createdAt: Date;
-  updatedAt: Date;
+  organizationId!: number;
+  createdAt!: Date;
+  updatedAt!: Date;
   users?: UserTeam[];
   hosts?: HostTeam[];
 }
 
 export class UserTeam {
-  userId: number;
-  teamId: number;
-  role: string;
-  createdAt: Date;
+  userId!: number;
+  teamId!: number;
+  role!: string;
+  createdAt!: Date;
   user?: User;
   team?: Team;
 }
 
 export class HostTeam {
-  hostId: number;
-  teamId: number;
-  createdAt: Date;
+  hostId!: number;
+  teamId!: number;
+  createdAt!: Date;
   host?: Host;
   team?: Team;
 }
