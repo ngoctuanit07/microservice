@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Controller('transaction')
 export class TransactionController {
@@ -11,7 +13,7 @@ export class TransactionController {
   }
 
   @Post()
-  async create(@Body() body: { name: string; type: string; amount: number; date: Date }) {
+  async create(@Body() body: CreateTransactionDto) {
     try {
       return await this.service.create(body);
     } catch (err) {
@@ -22,12 +24,12 @@ export class TransactionController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() body: { name?: string; type?: string; amount?: number; date?: Date }) {
-    return this.service.update(Number(id), body);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateTransactionDto) {
+    return this.service.update(id, body);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.service.delete(Number(id));
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return this.service.delete(id);
   }
 }

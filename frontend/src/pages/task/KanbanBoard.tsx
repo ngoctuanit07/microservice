@@ -76,7 +76,7 @@ export default function KanbanBoard() {
 
   const handleCreateBoard = async () => {
     if (newBoardName.trim()) {
-      await http.post('/api/task/boards', { name: newBoardName });
+  await http.post('/task/boards', { name: newBoardName });
       setShowBoardModal(false);
       setNewBoardName('');
       fetchBoards();

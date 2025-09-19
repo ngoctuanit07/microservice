@@ -9,6 +9,9 @@ import { Request, Response, NextFunction } from 'express';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { AccessLogMiddleware } from './common/access-log.middleware';
 import { AccessLogHistoryService } from './common/access-log-history.service';
+import * as path from 'path';
+import * as fs from 'fs';
+import express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -43,6 +46,37 @@ async function bootstrap() {
     forbidUnknownValues: true,
   }));
   app.useGlobalFilters(new GlobalExceptionFilter());
+
+  // If a built frontend exists (e.g. frontend/dist), serve it and fallback to index.html
+  try {
+    const distPath = path.join(__dirname, '..', '..', 'frontend', 'dist')
+    const devIndex = path.join(__dirname, '..', '..', 'frontend', 'index.html')
+    const server = app.getHttpAdapter().getInstance() as express.Express
+
+    if (fs.existsSync(distPath)) {
+      // If a production build exists, serve it
+      server.use(express.static(distPath))
+      server.get('*', (req: Request, res: Response, next: NextFunction) => {
+        if (req.path.startsWith('/api')) return next()
+        res.sendFile(path.join(distPath, 'index.html'))
+      })
+      console.log('Serving frontend from', distPath)
+    } else if (fs.existsSync(devIndex)) {
+      // In dev without a build, serve the simple index.html as a fallback
+      const frontendRoot = path.join(__dirname, '..', '..', 'frontend')
+      server.use(express.static(frontendRoot))
+      server.get('*', (req: Request, res: Response, next: NextFunction) => {
+        if (req.path.startsWith('/api')) return next()
+        res.sendFile(devIndex)
+      })
+      console.log('Serving frontend index.html from', devIndex)
+    } else {
+      // No frontend available; skip static serving
+      console.log('No frontend found at', distPath, 'or', devIndex)
+    }
+  } catch (err) {
+    console.error('Error while configuring static frontend serving:', err)
+  }
 
   const port = Number(process.env.PORT ?? 3000);
   await app.listen(port);

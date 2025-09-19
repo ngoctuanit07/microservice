@@ -11,6 +11,13 @@ export default function EditTeam() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // guard against invalid id (avoid requests to /teams/NaN)
+    if (!id || isNaN(Number(id))) {
+      setError('Invalid team id');
+      setTimeout(() => navigate('/team'), 1000);
+      return;
+    }
+
     const fetchTeam = async () => {
       try {
         const { data } = await http.get(`/teams/${id}`);
@@ -27,6 +34,10 @@ export default function EditTeam() {
     e.preventDefault();
     setLoading(true);
     try {
+      if (!id || isNaN(Number(id))) {
+        setError('Invalid team id');
+        return;
+      }
       await http.put(`/teams/${id}`, { name, description });
       navigate('/team');
     } catch (err: any) {

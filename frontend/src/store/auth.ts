@@ -41,7 +41,7 @@ export const useAuth = create<AuthState>()(
       async login(email, password) {
         set({ loading: true, error: undefined });
         try {
-          const { data } = await http.post('/api/auth/login', { email, password });
+          const { data } = await http.post('/auth/login', { email, password });
           const token = data.access_token;
           
           // Parse user data from token

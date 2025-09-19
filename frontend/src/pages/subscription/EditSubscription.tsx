@@ -10,6 +10,12 @@ export default function EditSubscription() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!id || isNaN(Number(id))) {
+      setError('Invalid subscription id');
+      setTimeout(() => navigate('/subscription'), 900);
+      return;
+    }
+
     const fetchSub = async () => {
       try {
         const { data } = await http.get(`/subscription/${id}`);
@@ -25,6 +31,10 @@ export default function EditSubscription() {
     e.preventDefault();
     setLoading(true);
     try {
+      if (!id || isNaN(Number(id))) {
+        setError('Invalid subscription id');
+        return;
+      }
       await http.put(`/subscription/${id}`, { plan });
       navigate('/subscription');
     } catch (err: any) {

@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TransactionController = void 0;
 const common_1 = require("@nestjs/common");
 const transaction_service_1 = require("./transaction.service");
+const create_transaction_dto_1 = require("./dto/create-transaction.dto");
+const update_transaction_dto_1 = require("./dto/update-transaction.dto");
 let TransactionController = class TransactionController {
     constructor(service) {
         this.service = service;
@@ -32,10 +34,10 @@ let TransactionController = class TransactionController {
         }
     }
     async update(id, body) {
-        return this.service.update(Number(id), body);
+        return this.service.update(id, body);
     }
     async delete(id) {
-        return this.service.delete(Number(id));
+        return this.service.delete(id);
     }
 };
 exports.TransactionController = TransactionController;
@@ -49,22 +51,22 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_transaction_dto_1.CreateTransactionDto]),
     __metadata("design:returntype", Promise)
 ], TransactionController.prototype, "create", null);
 __decorate([
     (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [Number, update_transaction_dto_1.UpdateTransactionDto]),
     __metadata("design:returntype", Promise)
 ], TransactionController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], TransactionController.prototype, "delete", null);
 exports.TransactionController = TransactionController = __decorate([

@@ -2,8 +2,14 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { toast } from 'react-toastify'
 
 // Create an API client instance
+// Build baseURL and ensure it includes the '/api' prefix which the backend
+// expects (backend sets a global prefix '/api'). Use VITE_API_URL when set
+// and append '/api' if it's not already present.
+const rawBase = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const baseURL = rawBase.endsWith('/api') ? rawBase : rawBase.replace(/\/+$/, '') + '/api'
+
 export const http = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+  baseURL,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
@@ -47,8 +53,10 @@ http.interceptors.response.use(
       // Unauthorized - handle token refresh or logout
       
       // Don't retry already retried requests or login requests
-      if (originalRequest._retry || originalRequest.url === '/api/auth/login' || 
-          originalRequest.url === '/api/auth/refresh') {
+    // originalRequest.url can be the relative path (eg. '/auth/login')
+    const reqUrl = originalRequest.url as string
+    if (originalRequest._retry || reqUrl === '/auth/login' || 
+      reqUrl === '/auth/refresh') {
         // Clear auth and redirect to login if not already there
         localStorage.removeItem('token')
         if (!location.pathname.startsWith('/login')) {

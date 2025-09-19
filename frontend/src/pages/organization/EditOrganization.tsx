@@ -10,6 +10,12 @@ export default function EditOrganization() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!id || isNaN(Number(id))) {
+      setError('Invalid organization id');
+      setTimeout(() => navigate('/organization'), 900);
+      return;
+    }
+
     const fetchOrg = async () => {
       try {
         const { data } = await http.get(`/organizations/${id}`);
@@ -25,6 +31,10 @@ export default function EditOrganization() {
     e.preventDefault();
     setLoading(true);
     try {
+      if (!id || isNaN(Number(id))) {
+        setError('Invalid organization id');
+        return;
+      }
       await http.put(`/organizations/${id}`, { name });
       navigate('/organization');
     } catch (err: any) {

@@ -12,6 +12,14 @@ export default function EditHost() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // guard: ensure id is present and numeric to avoid requests to /hosts/NaN
+    if (!id || isNaN(Number(id))) {
+      setError('Invalid host id');
+      // navigate away after short delay so user sees message
+      const t = setTimeout(() => navigate('/hosts'), 1200);
+      return () => clearTimeout(t);
+    }
+
     const fetchHost = async () => {
       try {
         const { data } = await http.get(`/hosts/${id}`);
@@ -23,12 +31,16 @@ export default function EditHost() {
       }
     };
     fetchHost();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
+      if (!id || isNaN(Number(id))) {
+        setError('Invalid host id');
+        return;
+      }
       await http.put(`/hosts/${id}`, { ip, port, notes });
       navigate('/hosts');
     } catch (err: any) {

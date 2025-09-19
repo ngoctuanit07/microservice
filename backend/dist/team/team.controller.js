@@ -26,28 +26,28 @@ let TeamController = class TeamController {
         return this.teamService.createTeam(createTeamDto.name, createTeamDto.description, createTeamDto.organizationId, req.user.userId);
     }
     async findByOrganization(req, organizationId) {
-        return this.teamService.findTeamsByOrganization(+organizationId, req.user.userId);
+        return this.teamService.findTeamsByOrganization(organizationId, req.user.userId);
     }
     async findOne(req, id) {
-        return this.teamService.findTeamById(+id, req.user.userId);
+        return this.teamService.findTeamById(id, req.user.userId);
     }
     async update(req, id, updateTeamDto) {
-        return this.teamService.updateTeam(+id, updateTeamDto, req.user.userId);
+        return this.teamService.updateTeam(id, updateTeamDto, req.user.userId);
     }
     async remove(req, id) {
-        return this.teamService.deleteTeam(+id, req.user.userId);
+        return this.teamService.deleteTeam(id, req.user.userId);
     }
     async addMember(req, id, dto) {
-        return this.teamService.addTeamMember(+id, dto.userId, dto.role || 'MEMBER', req.user.userId);
+        return this.teamService.addTeamMember(id, dto.userId, dto.role || 'MEMBER', req.user.userId);
     }
     async removeMember(req, id, userId) {
-        return this.teamService.removeTeamMember(+id, +userId, req.user.userId);
+        return this.teamService.removeTeamMember(id, userId, req.user.userId);
     }
     async addHost(req, id, dto) {
-        return this.teamService.addHostToTeam(+id, dto.hostId, req.user.userId);
+        return this.teamService.addHostToTeam(id, dto.hostId, req.user.userId);
     }
     async removeHost(req, id, hostId) {
-        return this.teamService.removeHostFromTeam(+id, +hostId, req.user.userId);
+        return this.teamService.removeHostFromTeam(id, hostId, req.user.userId);
     }
 };
 exports.TeamController = TeamController;
@@ -62,70 +62,70 @@ __decorate([
 __decorate([
     (0, common_1.Get)('organization/:organizationId'),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('organizationId')),
+    __param(1, (0, common_1.Param)('organizationId', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "findByOrganization", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, update_team_dto_1.UpdateTeamDto]),
+    __metadata("design:paramtypes", [Object, Number, update_team_dto_1.UpdateTeamDto]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "remove", null);
 __decorate([
     (0, common_1.Post)(':id/members'),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, Object]),
+    __metadata("design:paramtypes", [Object, Number, Object]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "addMember", null);
 __decorate([
     (0, common_1.Delete)(':id/members/:userId'),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:paramtypes", [Object, Number, Number]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "removeMember", null);
 __decorate([
     (0, common_1.Post)(':id/hosts'),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, Object]),
+    __metadata("design:paramtypes", [Object, Number, Object]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "addHost", null);
 __decorate([
     (0, common_1.Delete)(':id/hosts/:hostId'),
     __param(0, (0, common_1.Request)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, common_1.Param)('hostId')),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Param)('hostId', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:paramtypes", [Object, Number, Number]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "removeHost", null);
 exports.TeamController = TeamController = __decorate([

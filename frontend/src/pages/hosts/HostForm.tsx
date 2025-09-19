@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { createHost, getHost, updateHost } from '@services/hostService'
-import type { Host } from '@types/index'
+import type { Host } from '../../types'
 
 function toDateInputValue(s?: string) {
   if (!s) return ''
@@ -28,6 +28,12 @@ export default function HostForm() {
   useEffect(() => {
     (async () => {
       if (!isNew && id) {
+        // ensure id is numeric
+        if (isNaN(Number(id))) {
+          setErr('Invalid host id');
+          setTimeout(() => nav('/hosts'), 900);
+          return
+        }
         setLoading(true)
         try {
           const data = await getHost(Number(id))
@@ -44,25 +50,34 @@ export default function HostForm() {
         }
       }
     })()
-  }, [id])
+  }, [id, isNew])
 
-  const onChange = (k: string, v: any) => setForm((s) => ({ ...s, [k]: v }))
+  const onChange = (k: string, v: any) => setForm((s: any) => ({ ...s, [k]: v }))
 
   const save = async () => {
     setErr('')
     try {
       setLoading(true)
       if (isNew) {
-        // backend nhận ISO date hoặc "YYYY-MM-DD"
-        await createHost({
-          ip: String(form.ip || ''),
-          port: Number(form.port || 0),
-          uid: String(form.uid || ''),
-          pwd: String(form.pwd || ''), // required on create
-          purchasedAt: String(form.purchasedAt || ''),
-          expiredAt: String(form.expiredAt || ''),
+        // client-side validation to satisfy backend DTO
+        const ip = String(form.ip || '').trim()
+        const uid = String(form.uid || '').trim()
+        const pwd = String(form.pwd || '')
+        const port = Number(form.port || 0)
+
+        if (!ip) throw new Error('IP is required')
+        if (!uid) throw new Error('UID is required')
+        if (!pwd) throw new Error('Password is required')
+        if (!Number.isFinite(port) || port < 1 || port > 65535) throw new Error('Port must be between 1 and 65535')
+
+        const payload: any = {
+          ip,
+          port,
+          uid,
+          pwd,
           notes: form.notes || ''
-        })
+        }
+        await createHost(payload)
       } else {
         const payload: any = {
           ip: form.ip, port: form.port, uid: form.uid,

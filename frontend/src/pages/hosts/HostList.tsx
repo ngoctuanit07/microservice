@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listHosts, deleteHost, revealPwd } from '@services/hostService'
-import type { HostPaged } from '@types/index'
+import type { HostPaged } from '../../types'
 
 function fmtDate(d: string) {
   const dt = new Date(d)

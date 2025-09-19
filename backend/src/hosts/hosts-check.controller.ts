@@ -1,10 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import * as net from 'net';
 
 @Controller('hosts')
 export class HostsCheckController {
   @Get(':id/check')
-  async checkHost(@Param('id') id: string) {
+  async checkHost(@Param('id', ParseIntPipe) id: number) {
     // Giả sử lấy thông tin host từ DB, ở đây demo hardcode
     // Thực tế nên inject HostsService và lấy host theo id
     const host = { ip: '8.8.8.8', port: 53 };

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Injectable()
 export class TransactionService {
@@ -10,22 +12,22 @@ export class TransactionService {
     return (this.prisma as any).transaction.findMany({ orderBy: { date: 'desc' } });
   }
 
-  async create(data: { name: string; type: string; amount: number; date: Date }) {
+  async create(data: CreateTransactionDto) {
     // Ensure date is a JS Date when provided as a string
     const payload: any = { ...data };
     if (payload.date && typeof payload.date === 'string') {
       payload.date = new Date(payload.date);
     }
-    // @ts-ignore
+    // @ts-ignore - Prisma client typing for dynamic model access
     return (this.prisma as any).transaction.create({ data: payload });
   }
 
-  async update(id: number, data: { name?: string; type?: string; amount?: number; date?: Date }) {
+  async update(id: number, data: UpdateTransactionDto) {
     const payload: any = { ...data };
     if (payload.date && typeof payload.date === 'string') {
       payload.date = new Date(payload.date);
     }
-    // @ts-ignore
+    // @ts-ignore - Prisma client typing for dynamic model access
     return (this.prisma as any).transaction.update({ where: { id }, data: payload });
   }
 

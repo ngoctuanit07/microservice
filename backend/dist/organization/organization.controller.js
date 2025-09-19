@@ -29,23 +29,23 @@ let OrganizationController = class OrganizationController {
         return this.organizationService.getUserOrganization(req.user.sub);
     }
     async getOrganization(id) {
-        return this.organizationService.getOrganization(+id);
+        return this.organizationService.getOrganization(id);
     }
     async updateOrganization(id, body, req) {
-        return this.organizationService.updateOrganization(+id, body, req.user.email);
+        return this.organizationService.updateOrganization(id, body, req.user.email);
     }
     async deleteOrganization(id, req) {
-        return this.organizationService.deleteOrganization(+id, req.user.email);
+        return this.organizationService.deleteOrganization(id, req.user.email);
     }
     async inviteUser(id, body, req) {
         const role = body.role || 'USER';
-        return this.organizationService.inviteUser(+id, body.email, role, req.user.email);
+        return this.organizationService.inviteUser(id, body.email, role, req.user.email);
     }
     async removeUser(orgId, userId, req) {
-        return this.organizationService.removeUser(+orgId, +userId, req.user.email);
+        return this.organizationService.removeUser(orgId, userId, req.user.email);
     }
     async changeUserRole(orgId, userId, body, req) {
-        return this.organizationService.changeUserRole(+orgId, +userId, body.role, req.user.email);
+        return this.organizationService.changeUserRole(orgId, userId, body.role, req.user.email);
     }
 };
 exports.OrganizationController = OrganizationController;
@@ -68,20 +68,20 @@ __decorate([
     (0, common_1.Get)(':id'),
     (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "getOrganization", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:paramtypes", [Number, Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "updateOrganization", null);
 __decorate([
@@ -89,21 +89,21 @@ __decorate([
     (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.HttpCode)(200),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "deleteOrganization", null);
 __decorate([
     (0, common_1.Post)(':id/users'),
     (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:paramtypes", [Number, Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "inviteUser", null);
 __decorate([
@@ -111,23 +111,23 @@ __decorate([
     (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.HttpCode)(200),
-    __param(0, (0, common_1.Param)('orgId')),
-    __param(1, (0, common_1.Param)('userId')),
+    __param(0, (0, common_1.Param)('orgId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:paramtypes", [Number, Number, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "removeUser", null);
 __decorate([
     (0, common_1.Patch)(':orgId/users/:userId/role'),
     (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
-    __param(0, (0, common_1.Param)('orgId')),
-    __param(1, (0, common_1.Param)('userId')),
+    __param(0, (0, common_1.Param)('orgId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
     __param(2, (0, common_1.Body)()),
     __param(3, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Object, Object]),
+    __metadata("design:paramtypes", [Number, Number, Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "changeUserRole", null);
 exports.OrganizationController = OrganizationController = __decorate([

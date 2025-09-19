@@ -16,6 +16,7 @@
     "migrate:commercial": "node scripts/migrate-commercial.js",
     "migrate:data-commercial": "node scripts/migrate-data-commercial.js",
     "seed": "ts-node src/users/seed.ts"
+    ,"smoke:test":"node test/integration_post_transaction.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

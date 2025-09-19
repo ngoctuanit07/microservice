@@ -1,17 +1,17 @@
 import { http } from './http';
 
 export async function getTransactions() {
-  return http.get('/api/transaction');
+  return http.get('/transaction');
 }
 
 export async function createTransaction(data: { name: string; type: string; amount: number; date: string }) {
-  return http.post('/api/transaction', data);
+  return http.post('/transaction', data);
 }
 
 export async function updateTransaction(id: number, data: { name?: string; type?: string; amount?: number; date?: string }) {
-  return http.put(`/api/transaction/${id}`, data);
+  return http.put(`/transaction/${id}`, data);
 }
 
 export async function deleteTransaction(id: number) {
-  return http.delete(`/api/transaction/${id}`);
+  return http.delete(`/transaction/${id}`);
 }
