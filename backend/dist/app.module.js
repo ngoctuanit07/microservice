@@ -26,6 +26,7 @@ const config_controller_1 = require("./common/config.controller");
 const security_scan_controller_1 = require("./common/security-scan.controller");
 const access_log_history_controller_1 = require("./common/access-log-history.controller");
 const dependency_controller_1 = require("./common/dependency.controller");
+const transaction_module_1 = require("./transaction/transaction.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -41,6 +42,7 @@ exports.AppModule = AppModule = __decorate([
             subscription_module_1.SubscriptionModule,
             team_module_1.TeamModule,
             task_module_1.TaskModule,
+            transaction_module_1.TransactionModule,
         ],
         controllers: [
             stats_controller_1.StatsController,

@@ -18,6 +18,7 @@ import CreateTeam from '@pages/team/CreateTeam'
 import EditTeam from '@pages/team/EditTeam'
 import KanbanBoard from '@pages/task/KanbanBoard'
 import RolesPermissions from '@pages/admin/RolesPermissions'
+import TransactionManagement from './pages/TransactionManagement'
 
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -44,8 +45,9 @@ const router = createBrowserRouter([
       { path: 'subscription/success', element: <SubscriptionSuccess /> },
       // Task routes
       { path: 'task', element: <KanbanBoard /> },
-      // Admin routes
-      { path: 'admin/roles', element: <RolesPermissions /> },
+  // Admin routes
+  { path: 'admin/roles', element: <RolesPermissions /> },
+  { path: 'transaction', element: <TransactionManagement /> },
     ]
   }
 ])

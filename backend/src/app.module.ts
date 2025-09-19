@@ -17,6 +17,7 @@ import { ConfigController } from './common/config.controller';
 import { SecurityScanController } from './common/security-scan.controller';
 import { AccessLogHistoryController } from './common/access-log-history.controller';
 import { DependencyController } from './common/dependency.controller';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { DependencyController } from './common/dependency.controller';
     SubscriptionModule,
   TeamModule,
   TaskModule,
+  TransactionModule,
   ],
   controllers: [
     StatsController, 

@@ -28,6 +28,8 @@ export default function Layout() {
               <NavLink to="/" end>Dashboard</NavLink>
               <NavLink to="/hosts">Hosts</NavLink>
               <NavLink to="/task">Task Board</NavLink>
+              <NavLink to="/transaction">Quản lý Thu Chi</NavLink>
+              <NavLink to="/team">Teams</NavLink>
             </div>
             
             <div className="nav-section">

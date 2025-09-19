@@ -8,11 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var StripeService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StripeService = void 0;
 const common_1 = require("@nestjs/common");
-const stripe_1 = require("stripe");
+const stripe_1 = __importDefault(require("stripe"));
 let StripeService = StripeService_1 = class StripeService {
     constructor() {
         this.logger = new common_1.Logger(StripeService_1.name);
