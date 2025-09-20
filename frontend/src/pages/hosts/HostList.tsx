@@ -64,7 +64,7 @@ export default function HostList() {
                 <td>{fmtDate(h.expiredAt)}</td>
                 <td>{h.notes ?? ''}</td>
                 <td style={{whiteSpace:'nowrap'}}>
-                  <Link to={`/hosts/${h.id}`} className="kbd">Edit</Link>{' '}
+                  <Link to={`/hosts/${h.id}/edit`} className="kbd">Edit</Link>{' '}
                   <a href="#" className="kbd"
                      onClick={async (e)=>{e.preventDefault(); try { const pwd=await revealPwd(h.id); alert(`Password: ${pwd}`) } catch (e:any) { alert(e?.response?.data?.message || 'Reveal failed') }}}>
                     Reveal

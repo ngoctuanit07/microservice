@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { createHost, getHost, updateHost } from '@services/hostService'
 import type { Host } from '../../types'
 
@@ -15,7 +15,9 @@ function toDateInputValue(s?: string) {
 
 export default function HostForm() {
   const { id } = useParams()
-  const isNew = id === 'new'
+  const location = useLocation()
+  // robustly detect the 'new' path — prevents '/hosts/new' being treated as an id
+  const isNew = id === 'new' || location.pathname.endsWith('/hosts/new')
   const nav = useNavigate()
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState('')
@@ -70,12 +72,29 @@ export default function HostForm() {
         if (!pwd) throw new Error('Password is required')
         if (!Number.isFinite(port) || port < 1 || port > 65535) throw new Error('Port must be between 1 and 65535')
 
+        const purchasedAt = String(form.purchasedAt || '').trim()
+        const expiredAt = String(form.expiredAt || '').trim()
+        if (!purchasedAt) throw new Error('Purchased date is required')
+        if (!expiredAt) throw new Error('Expired date is required')
+        // validate dates
+        if (Number.isNaN(Date.parse(purchasedAt))) throw new Error('Purchased date is invalid')
+        if (Number.isNaN(Date.parse(expiredAt))) throw new Error('Expired date is invalid')
+        if (new Date(expiredAt) < new Date(purchasedAt)) throw new Error('Expired date must be after purchased date')
+
         const payload: any = {
           ip,
           port,
           uid,
           pwd,
+          purchasedAt,
+          expiredAt,
           notes: form.notes || ''
+        }
+        // log payload for easier debugging in the browser console
+        try {
+          console.debug('[HostForm] create payload', payload)
+        } catch (err) {
+          /* ignore */
         }
         await createHost(payload)
       } else {
@@ -87,8 +106,17 @@ export default function HostForm() {
         await updateHost(Number(id), payload)
       }
       nav('/hosts')
-    } catch (e:any) {
-      setErr(e?.response?.data?.message || 'Save failed')
+    } catch (e: any) {
+      // log full error for debugging
+      try { console.error('[HostForm] save error', e) } catch (_) { }
+
+      const status = e?.response?.status
+      const serverData = e?.response?.data
+      const serverMsg = serverData?.message || (serverData ? JSON.stringify(serverData) : null)
+
+      const shown = serverMsg || e?.message || 'Save failed'
+      // include status when present
+      setErr(status ? `(${status}) ${shown}` : shown)
     } finally {
       setLoading(false)
     }
