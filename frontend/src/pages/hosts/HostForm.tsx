@@ -123,36 +123,57 @@ export default function HostForm() {
   }
 
   return (
-    <div className="card" style={{maxWidth: 720}}>
-      <h2>{isNew ? 'Create Host' : 'Edit Host'}</h2>
-      {err && <div style={{color:'#fca5a5', marginBottom:8}}>{err}</div>}
-
-      <div className="row" style={{flexDirection:'column', gap:10}}>
-        <label>IP</label>
-        <input value={form.ip ?? ''} onChange={(e)=>onChange('ip', e.target.value)} placeholder="192.168.1.10" />
-
-        <label>Port</label>
-        <input type="number" value={form.port ?? 22} onChange={(e)=>onChange('port', Number(e.target.value))} placeholder="22" />
-
-        <label>UID</label>
-        <input value={form.uid ?? ''} onChange={(e)=>onChange('uid', e.target.value)} placeholder="root / admin ..." />
-
-        <label>Password {isNew ? <span className="badge">required</span> : <span className="badge">leave blank to keep</span>}</label>
-        <input type="password" value={form.pwd ?? ''} onChange={(e)=>onChange('pwd', e.target.value)} placeholder="********" />
-
-        <label>Purchased At</label>
-        <input type="date" value={String(form.purchasedAt || '')} onChange={(e)=>onChange('purchasedAt', e.target.value)} />
-
-        <label>Expired At</label>
-        <input type="date" value={String(form.expiredAt || '')} onChange={(e)=>onChange('expiredAt', e.target.value)} />
-
-        <label>Notes</label>
-        <textarea rows={3} value={form.notes ?? ''} onChange={(e)=>onChange('notes', e.target.value)} placeholder="Provider, panel, extra info..."></textarea>
-
-        <div className="row" style={{justifyContent:'flex-end'}}>
-          <button className="btn" onClick={()=>history.back()}>Cancel</button>
-          <button className="btn-primary" disabled={loading} onClick={save}>{loading ? '...' : 'Save'}</button>
+    <div className="card shadow-sm" style={{maxWidth: 900}}>
+      <div className="card-body">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h4 className="mb-0">{isNew ? 'Create Host' : 'Edit Host'}</h4>
+          <div>
+            <button className="btn btn-secondary me-2" onClick={()=>history.back()}>Cancel</button>
+            <button className="btn btn-primary" disabled={loading} onClick={save}>{loading ? '...' : 'Save'}</button>
+          </div>
         </div>
+
+        {err && <div className="alert alert-danger">{err}</div>}
+
+        <form>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label className="form-label">IP</label>
+              <input className="form-control" value={form.ip ?? ''} onChange={(e)=>onChange('ip', e.target.value)} placeholder="192.168.1.10" />
+            </div>
+
+            <div className="col-md-3 mb-3">
+              <label className="form-label">Port</label>
+              <input className="form-control" type="number" value={form.port ?? 22} onChange={(e)=>onChange('port', Number(e.target.value))} placeholder="22" />
+            </div>
+
+            <div className="col-md-3 mb-3">
+              <label className="form-label">UID</label>
+              <input className="form-control" value={form.uid ?? ''} onChange={(e)=>onChange('uid', e.target.value)} placeholder="root / admin ..." />
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Password {isNew ? <span className="badge bg-info text-dark">required</span> : <span className="badge bg-secondary">leave blank to keep</span>}</label>
+            <input className="form-control" type="password" value={form.pwd ?? ''} onChange={(e)=>onChange('pwd', e.target.value)} placeholder="********" />
+          </div>
+
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label className="form-label">Purchased At</label>
+              <input className="form-control" type="date" value={String(form.purchasedAt || '')} onChange={(e)=>onChange('purchasedAt', e.target.value)} />
+            </div>
+            <div className="col-md-6 mb-3">
+              <label className="form-label">Expired At</label>
+              <input className="form-control" type="date" value={String(form.expiredAt || '')} onChange={(e)=>onChange('expiredAt', e.target.value)} />
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Notes</label>
+            <textarea className="form-control" rows={3} value={form.notes ?? ''} onChange={(e)=>onChange('notes', e.target.value)} placeholder="Provider, panel, extra info..."></textarea>
+          </div>
+        </form>
       </div>
     </div>
   )
