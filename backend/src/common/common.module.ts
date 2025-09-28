@@ -10,8 +10,17 @@ import { PushService } from './push.service';
 import { EmailLogService } from './email-log.service';
 import { ErrorAlertService } from './error-alert.service';
 import { AccessLogHistoryService } from './access-log-history.service';
+import { DashboardController } from './dashboard.controller';
+import { DashboardService } from './dashboard.service';
+import { NotificationGateway } from './notification.gateway';
+import { NotificationService } from './notification.service';
+import { SearchController } from './search.controller';
+import { SearchService } from './search.service';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
+  imports: [PrismaModule],
+  controllers: [DashboardController, SearchController],
   providers: [
     AuditLogService,
     MailService,
@@ -24,6 +33,10 @@ import { AccessLogHistoryService } from './access-log-history.service';
     EmailLogService,
     ErrorAlertService,
     AccessLogHistoryService,
+    DashboardService,
+    NotificationGateway,
+    NotificationService,
+    SearchService,
   ],
   exports: [
     AuditLogService,
@@ -37,6 +50,9 @@ import { AccessLogHistoryService } from './access-log-history.service';
     EmailLogService,
     ErrorAlertService,
     AccessLogHistoryService,
+    DashboardService,
+    NotificationService,
+    SearchService,
   ],
 })
 export class CommonModule {}

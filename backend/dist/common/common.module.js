@@ -19,11 +19,20 @@ const push_service_1 = require("./push.service");
 const email_log_service_1 = require("./email-log.service");
 const error_alert_service_1 = require("./error-alert.service");
 const access_log_history_service_1 = require("./access-log-history.service");
+const dashboard_controller_1 = require("./dashboard.controller");
+const dashboard_service_1 = require("./dashboard.service");
+const notification_gateway_1 = require("./notification.gateway");
+const notification_service_1 = require("./notification.service");
+const search_controller_1 = require("./search.controller");
+const search_service_1 = require("./search.service");
+const prisma_module_1 = require("../prisma/prisma.module");
 let CommonModule = class CommonModule {
 };
 exports.CommonModule = CommonModule;
 exports.CommonModule = CommonModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [dashboard_controller_1.DashboardController, search_controller_1.SearchController],
         providers: [
             audit_log_service_1.AuditLogService,
             mail_service_1.MailService,
@@ -36,6 +45,10 @@ exports.CommonModule = CommonModule = __decorate([
             email_log_service_1.EmailLogService,
             error_alert_service_1.ErrorAlertService,
             access_log_history_service_1.AccessLogHistoryService,
+            dashboard_service_1.DashboardService,
+            notification_gateway_1.NotificationGateway,
+            notification_service_1.NotificationService,
+            search_service_1.SearchService,
         ],
         exports: [
             audit_log_service_1.AuditLogService,
@@ -49,6 +62,9 @@ exports.CommonModule = CommonModule = __decorate([
             email_log_service_1.EmailLogService,
             error_alert_service_1.ErrorAlertService,
             access_log_history_service_1.AccessLogHistoryService,
+            dashboard_service_1.DashboardService,
+            notification_service_1.NotificationService,
+            search_service_1.SearchService,
         ],
     })
 ], CommonModule);

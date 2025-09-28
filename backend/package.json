@@ -15,8 +15,8 @@
     "prisma:migrate": "prisma migrate dev --name init",
     "migrate:commercial": "node scripts/migrate-commercial.js",
     "migrate:data-commercial": "node scripts/migrate-data-commercial.js",
-    "seed": "ts-node src/users/seed.ts"
-    ,"smoke:test":"node test/integration_post_transaction.js"
+    "seed": "ts-node src/users/seed.ts",
+    "smoke:test": "node test/integration_post_transaction.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -25,6 +25,8 @@
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-socket.io": "^10.0.0",
+    "@nestjs/websockets": "^10.0.0",
     "@prisma/client": "^5.22.0",
     "@types/compression": "^1.8.1",
     "@types/stripe": "^8.0.416",
@@ -41,6 +43,7 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1",
     "stripe": "^18.5.0",
     "web-push": "^3.6.7",
     "xlsx": "^0.18.5"
